@@ -3,19 +3,23 @@ import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class main extends JFrame {
-
-    public static void main(String[] args) {
-        new main();
-    }
+public class applicationBuild extends JFrame {
 
     //Constructor Section
-    JTextField txtPackageID, txtPackageName;
-    JLabel packageID, packageName;
-    JButton btnCreate, btnEnter, btnClear, btnDelete;
-    int packageIDNum;
+    public JTextField txtPackageID, txtPackageName;
+    public JLabel packageID, packageName;
+    //We use the static keyword here because we want these buttons to remain the same throughout the entire program.
+    //That means if I click btnView in a different class, we want to be referencing the same button throughout the whole program.
+    public static JButton btnView, btnEnter, btnClear, btnDelete;;
 
-    public main() {
+    public static boolean isThereOneEntry = false;
+    private int packageIDNum;
+
+    public static void main(String[] args) {
+        new applicationBuild();
+    }
+
+    public applicationBuild() {
         GridBagConstraints gbc = new GridBagConstraints();
 
         JPanel mainPanel = new JPanel(new GridBagLayout());
@@ -95,20 +99,24 @@ public class main extends JFrame {
         buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
         Dimension buttonDimension = new Dimension(100, 35);
 
-        btnCreate = new JButton("Create");
-        btnCreate.setMaximumSize(buttonDimension);
-        buttonsPanel.add(btnCreate);
+        btnView = new JButton("View");
+        btnView.setMaximumSize(buttonDimension);
+        btnView.addActionListener(new applicationFunctions());
+        buttonsPanel.add(btnView);
         buttonsPanel.add(Box.createHorizontalStrut(10));
         btnDelete = new JButton("Delete");
         btnDelete.setMaximumSize(buttonDimension);
+        btnDelete.addActionListener(new applicationFunctions());
         buttonsPanel.add(btnDelete);
         buttonsPanel.add(Box.createHorizontalStrut(10));
         btnEnter = new JButton("Enter");
         btnEnter.setMaximumSize(buttonDimension);
+        btnEnter.addActionListener(new applicationFunctions());
         buttonsPanel.add(btnEnter);
         buttonsPanel.add(Box.createHorizontalStrut(10));
         btnClear = new JButton("Clear");
         btnClear.setMaximumSize(buttonDimension);
+        btnClear.addActionListener(new applicationFunctions());
         buttonsPanel.add(btnClear);
 
         JPanel rightPanel = new JPanel(new GridLayout(2, 1, 10, 10));
@@ -134,7 +142,5 @@ public class main extends JFrame {
         setVisible(true);
         //This part of the JFrame building part sets the location of the window to the middle of the screen.
         setLocationRelativeTo(null);
-
-        //THIS IS A TEST TESTESTESTEST
     }
 }

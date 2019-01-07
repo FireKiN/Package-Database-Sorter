@@ -6,14 +6,14 @@ import java.util.Date;
 public class applicationBuild extends JFrame {
 
     //Constructor Section
-    public JTextField txtPackageID, txtPackageName;
-    public JLabel packageID, packageName;
+    public static JTextField txtPackageID, txtPackageName;
+    public JLabel lblPackageID, lblPackageName;
     //We use the static keyword here because we want these buttons to remain the same throughout the entire program.
     //That means if I click btnView in a different class, we want to be referencing the same button throughout the whole program.
     public static JButton btnView, btnEnter, btnClear, btnDelete;;
 
     public static boolean isThereOneEntry = false;
-    private int packageIDNum;
+    private int packageIDNum = 0;
 
     public static void main(String[] args) {
         new applicationBuild();
@@ -49,32 +49,29 @@ public class applicationBuild extends JFrame {
         mainPanel.add(imgBox, gbc);
 
         //It is here that the information will be entered.
-        //TODO Things to be entered so far: package ID, package name, Database ID(++ each package), weight
-        //Possible features: Date added(Side note, isn't there something where date is stored as a number, maybe we can sort out the database by date if this is true)
-        //Weight of package, size of package
+        //TODO Things to be entered so far: package ID, package name, Database ID(++ each package), date added, weight
         JPanel informationEntry = new JPanel(new GridLayout(5, 2, 10, 5));
         gbc.gridx = 1;
-        packageID = new JLabel("Package ID");
-        txtPackageID = new JTextField();
-        packageName = new JLabel("Package Name");
-        txtPackageName = new JTextField();
-
         JLabel databaseID = new JLabel("Database ID:");
         JLabel databaseIDNum = new JLabel(Integer.toString(packageIDNum));
         databaseIDNum.setHorizontalAlignment(JLabel.CENTER);
-
         informationEntry.add(databaseID);
         informationEntry.add(databaseIDNum);
 
-        JTextField[] txtInformationEntry = {txtPackageName, txtPackageID};
-        JLabel[] lblInformationEntry = {packageName, packageID};
+        lblPackageID = new JLabel("Package ID (8):");
+        txtPackageID = new JTextField();
+        lblPackageName = new JLabel("Package Name:");
+        txtPackageName = new JTextField();
+
+        JTextField[] txtInformationEntry = {txtPackageID, txtPackageName};
+        JLabel[] lblInformationEntry = {lblPackageID, lblPackageName};
 
         for (int i = 0; i < txtInformationEntry.length; i++) {
             informationEntry.add(lblInformationEntry[i]);
             informationEntry.add(txtInformationEntry[i]);
         }
 
-        JLabel dateArrived = new JLabel("Date Arrived: ");
+        JLabel dateArrived = new JLabel("Date Arrived:");
         Date today = new Date();
         SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd");
         JLabel date = new JLabel(df.format(today));
@@ -83,8 +80,8 @@ public class applicationBuild extends JFrame {
         informationEntry.add(dateArrived);
         informationEntry.add(date);
 
-        JLabel packageWeight = new JLabel("Weight (0 - 100Kg)");
-        SpinnerModel sm = new SpinnerNumberModel(0, 0, 100, 0.01);
+        JLabel packageWeight = new JLabel("Weight (0 - 100Kg):");
+        SpinnerModel sm = new SpinnerNumberModel(0, 0, 100, 0.1);
         JSpinner weight = new JSpinner(sm);
         //Centers the text of the JSpinner
         //TODO Explain more in depth and in detail so that piazza knows about what you are talking about

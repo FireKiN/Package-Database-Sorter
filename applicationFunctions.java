@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -13,6 +14,22 @@ public class applicationFunctions implements ActionListener {
                 new databaseBuild();
             }
             System.out.println("View Button Clicked");
+        }
+
+        if (a.getSource() == applicationBuild.btnEnter) {
+            boolean isCorrectInformation = true;
+            int packageID;
+            try {
+                packageID = Integer.parseInt(applicationBuild.txtPackageID.getText());
+                applicationBuild.txtPackageID.setBackground(Color.WHITE);
+                if (packageID < 0 || packageID > 8) {
+                    applicationBuild.txtPackageID.setBackground(Color.PINK);
+                    throw new NumberFormatException();
+                }
+            } catch (Exception error) {
+                applicationBuild.txtPackageID.setBackground(Color.PINK);
+                JOptionPane.showMessageDialog(null, "Please enter a valid package ID", "Error", 0);
+            }
         }
    }
 }

@@ -75,5 +75,15 @@ public class applicationFunctions implements ActionListener {
                 }
             }
         }
+        if (a.getSource() == applicationBuild.btnClear) {
+            applicationBuild.txtPackageID.setText("");
+            applicationBuild.txtPackageID.setBackground(Color.WHITE);
+            applicationBuild.txtPackageName.setText("");
+            applicationBuild.txtPackageName.setBackground(Color.WHITE);
+            applicationBuild.sm.setValue(0);
+        }
+        if (a.getSource() == applicationBuild.btnDelete) {
+
+        }
     }
 }

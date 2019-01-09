@@ -15,6 +15,8 @@ public class applicationBuild extends JFrame {
     //If there is only one entry then when the user clicks the view button, the database window does not display because there are
     //no entrys into the database, and the database looks awkward.
     public static boolean isThereOneEntry = false;
+  
+    public static SpinnerModel sm;
 
     public static void main(String[] args) {
         new applicationBuild();
@@ -82,7 +84,7 @@ public class applicationBuild extends JFrame {
         informationEntry.add(date);
 
         JLabel packageWeight = new JLabel("Weight (0 - 100Kg):");
-        SpinnerModel sm = new SpinnerNumberModel(0, 0, 100, 0.1);
+        sm = new SpinnerNumberModel(0, 0, 100, 0.1);
         JSpinner weight = new JSpinner(sm);
         //Centers the text of the JSpinner
         //TODO Explain more in depth and in detail so that piazza knows about what you are talking about

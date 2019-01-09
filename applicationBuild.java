@@ -15,6 +15,7 @@ public class applicationBuild extends JFrame {
     //If there is only one entry then when the user clicks the view button, the database window does not display because there are
     //no entrys into the database, and the database looks awkward.
     public static boolean isThereOneEntry = false;
+  
     public static SpinnerModel sm;
 
     public static void main(String[] args) {

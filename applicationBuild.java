@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -8,13 +10,14 @@ public class applicationBuild extends JFrame {
     //Constructor Section
     public static JTextField txtPackageID, txtPackageName;
     public JLabel lblPackageID, lblPackageName;
+    public static JLabel lblDatabaseIDNum;
     //We use the static keyword here because we want these buttons to remain the same throughout the entire program.
     //That means if I click btnView in a different class, we want to be referencing the same button throughout the whole program.
     public static JButton btnView, btnEnter, btnClear, btnDelete;;
-
+    //If there is only one entry then when the user clicks the view button, the database window does not display because there are
+    //no entrys into the database, and the database looks awkward.
     public static boolean isThereOneEntry = false;
-    private int packageIDNum = 0;
-
+    
     public static void main(String[] args) {
         new applicationBuild();
     }
@@ -53,10 +56,10 @@ public class applicationBuild extends JFrame {
         JPanel informationEntry = new JPanel(new GridLayout(5, 2, 10, 5));
         gbc.gridx = 1;
         JLabel databaseID = new JLabel("Database ID:");
-        JLabel databaseIDNum = new JLabel(Integer.toString(packageIDNum));
-        databaseIDNum.setHorizontalAlignment(JLabel.CENTER);
+        lblDatabaseIDNum = new JLabel(Integer.toString(databaseBuild.databaseIDNum));
+        lblDatabaseIDNum.setHorizontalAlignment(JLabel.CENTER);
         informationEntry.add(databaseID);
-        informationEntry.add(databaseIDNum);
+        informationEntry.add(lblDatabaseIDNum);
 
         lblPackageID = new JLabel("Package ID (8):");
         txtPackageID = new JTextField();

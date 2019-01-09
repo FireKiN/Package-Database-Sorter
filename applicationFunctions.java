@@ -1,18 +1,14 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.awt.event.*;
+import java.io.*;
 import java.text.DecimalFormat;
 
 public class applicationFunctions implements ActionListener {
 
-	static int packageID;
-	
-	public void actionPerformed(ActionEvent a) {
+    static int packageID;
+
+    public void actionPerformed(ActionEvent a) {
         //The reason why I use the class name to locate the button instead of creating an object from the class can be located here: http://www.dgp.toronto.edu/~trendall/course/108/lectures/L03node2.html
         if (a.getSource() == applicationBuild.btnView) {
             if (applicationBuild.isThereOneEntry == false) {
@@ -45,9 +41,9 @@ public class applicationFunctions implements ActionListener {
                 applicationBuild.txtPackageID.setBackground(Color.PINK);
                 JOptionPane.showMessageDialog(null, "Please enter a valid package ID", "Error", 0);
             }
-            
+
             if (applicationBuild.txtPackageName.getText().equals("")) {
-            	isInformationCorrect = false;
+                isInformationCorrect = false;
                 applicationBuild.txtPackageName.setBackground(Color.PINK);
                 JOptionPane.showMessageDialog(null, "Please enter a package name", "Error", 0);
             }
@@ -58,26 +54,26 @@ public class applicationFunctions implements ActionListener {
 
                 DecimalFormat packageIDDF = new DecimalFormat("00000000");
                 String formattedPackageID = packageIDDF.format(packageID);
-                
+
                 System.out.println("Database ID: " + databaseBuild.databaseIDNum + " | Package ID: " + formattedPackageID + " Package Name: " + applicationBuild.txtPackageName.getText());
-                
+
                 try {
                     File dataFile = new File("src\\data.txt");
-                    
+
                     String[] informationTypes = {formattedPackageID, Integer.toString(databaseBuild.databaseIDNum), applicationBuild.txtPackageName.getText()};
-                    
+
                     BufferedWriter out = new BufferedWriter(new FileWriter(dataFile, true));
-                    
+
                     for (int i = 0; i < informationTypes.length; i++) {
-                    	out.write(informationTypes[i] + " | ");
+                        out.write(informationTypes[i] + " | ");
                     }
                     out.newLine();
-                    
+
                     out.close();
                 } catch (IOException error) {
-                	System.out.println("Could not create file");
-                }                
+                    System.out.println("Could not create file");
+                }
             }
         }
-   }
+    }
 }

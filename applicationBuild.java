@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -17,7 +15,7 @@ public class applicationBuild extends JFrame {
     //If there is only one entry then when the user clicks the view button, the database window does not display because there are
     //no entrys into the database, and the database looks awkward.
     public static boolean isThereOneEntry = false;
-    
+
     public static void main(String[] args) {
         new applicationBuild();
     }

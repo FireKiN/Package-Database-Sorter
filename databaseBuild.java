@@ -1,41 +1,46 @@
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 public class databaseBuild extends JFrame {
-    public static void main(String[] args) {
-        new databaseBuild();
-    }
+	public static void main(String[] args) {
+		new databaseBuild();
+	}
 
-    static int databaseIDNum;
-    public static JButton btnDatabaseID, btnPackageName, btnPackageID, btnDateArrived, btnWeight;
-    public static JPanel databaseMainPanel;
-    int maxRows = 0;
+	public static JButton btnDatabaseID, btnPackageName, btnPackageID, btnDateArrived, btnWeight;
+	public static JPanel databaseMainPanel;
+	public static int databaseIDNum = 0;
 
-    public databaseBuild() {
+	private int maxRows = 0;
 
-        databaseMainPanel = new JPanel();
-        databaseMainPanel.setLayout(new GridLayout(maxRows++, 5));
+	public databaseBuild() {
 
-        btnDatabaseID = new JButton("Database ID");
-        btnPackageName = new JButton("Package Name");
-        btnPackageID = new JButton("Package ID");
-        btnDateArrived = new JButton("Date Arrived");
-        btnWeight = new JButton("Weight");
+		databaseMainPanel = new JPanel();
+		databaseMainPanel.setLayout(new GridLayout(maxRows++, 5));
 
-        JButton[] topButtons = {btnDatabaseID, btnPackageName, btnPackageID, btnDateArrived, btnWeight};
-        Dimension buttonDimension = new Dimension(0, 35);
+		btnDatabaseID = new JButton("Database ID");
+		btnPackageName = new JButton("Package Name");
+		btnPackageID = new JButton("Package ID");
+		btnDateArrived = new JButton("Date Arrived");
+		btnWeight = new JButton("Weight");
 
-        for (int i = 0; i < topButtons.length; i++) {
-            topButtons[i].setMaximumSize(buttonDimension);
-            databaseMainPanel.add(topButtons[i]);
-        }
+		JButton[] topButtons = { btnDatabaseID, btnPackageName, btnPackageID, btnDateArrived, btnWeight };
+		Dimension buttonDimension = new Dimension(0, 35);
 
-        setTitle("Package Sorter");
-        setContentPane(databaseMainPanel);
-        setSize(1000,maxRows*45);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setResizable(false);
-        setVisible(true);
-        setLocationRelativeTo(null);
-    }
+		for (int i = 0; i < topButtons.length; i++) {
+			topButtons[i].setMaximumSize(buttonDimension);
+			databaseMainPanel.add(topButtons[i]);
+		}
+
+		setTitle("Package Sorter");
+		setContentPane(databaseMainPanel);
+		setSize(1000, maxRows * 45);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setResizable(false);
+		setVisible(true);
+		setLocationRelativeTo(null);
+	}
 }

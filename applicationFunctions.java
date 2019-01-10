@@ -8,6 +8,7 @@ public class applicationFunctions implements ActionListener {
 
     static int packageID;
     File dataFile = new File("src//data.txt");
+    static File databaseIDTracker = new File("src\\id.txt");
 
     public void actionPerformed(ActionEvent a) {
         //The reason why I use the class name to locate the button instead of creating an object from the class can be located here: http://www.dgp.toronto.edu/~trendall/course/108/lectures/L03node2.html
@@ -59,7 +60,15 @@ public class applicationFunctions implements ActionListener {
                 String formattedPackageID = packageIDDF.format(packageID);
 
                 System.out.println("Database ID: " + databaseBuild.databaseIDNum + " | Package ID: " + formattedPackageID + " Package Name: " + applicationBuild.txtPackageName.getText());
-
+                
+                try {
+					BufferedWriter out = new BufferedWriter(new FileWriter(databaseIDTracker, false));
+					out.write(Integer.toString(databaseBuild.databaseIDNum));
+					out.close();
+				} catch (IOException error) {
+					System.out.println("Could not create file");
+				}
+                
                 try {
                     String[] informationTypes = {formattedPackageID, Integer.toString(databaseBuild.databaseIDNum), applicationBuild.txtPackageName.getText()};
 

@@ -55,6 +55,17 @@ public class applicationBuild extends JFrame {
         JPanel informationEntry = new JPanel(new GridLayout(5, 2, 10, 5));
         gbc.gridx = 1;
         JLabel databaseID = new JLabel("Database ID:");
+        String line = "";
+		try {
+			BufferedReader in = new BufferedReader(new FileReader(applicationFunctions.databaseIDTracker));
+			line = in.readLine();
+ 			while (line != null) {
+			}
+			databaseBuild.databaseIDNum = Integer.parseInt(line);
+ 			in.close();
+		} catch (IOException error) { 
+			System.out.println("Could not read file");
+		}
         lblDatabaseIDNum = new JLabel(Integer.toString(databaseBuild.databaseIDNum));
         lblDatabaseIDNum.setHorizontalAlignment(JLabel.CENTER);
         informationEntry.add(databaseID);

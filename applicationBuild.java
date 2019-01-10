@@ -59,8 +59,6 @@ public class applicationBuild extends JFrame {
 		try {
 			BufferedReader in = new BufferedReader(new FileReader(applicationFunctions.databaseIDTracker));
 			line = in.readLine();
- 			while (line != null) {
-			}
 			databaseBuild.databaseIDNum = Integer.parseInt(line);
  			in.close();
 		} catch (IOException error) { 

@@ -16,6 +16,7 @@ public class applicationBuild extends JFrame {
     //If there is only one entry then when the user clicks the view button, the database window does not display because there are
     //no entrys into the database, and the database looks awkward.
     public static boolean isThereOneEntry = false;
+    public static String formattedDate;
     public static SpinnerModel sm;
 
     public static void main(String[] args) {
@@ -86,7 +87,8 @@ public class applicationBuild extends JFrame {
         JLabel dateArrived = new JLabel("Date Arrived:");
         Date today = new Date();
         SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd");
-        JLabel date = new JLabel(df.format(today));
+        formattedDate = df.format(today);
+        JLabel date = new JLabel(formattedDate);
         date.setHorizontalAlignment(JLabel.CENTER);
 
         informationEntry.add(dateArrived);

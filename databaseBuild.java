@@ -45,6 +45,7 @@ public class databaseBuild extends JFrame {
                 currentLineComponents = currentLine.split("<>");
                 for (int i = 0; i < currentLineComponents.length; i++) {
                     JLabel placeHolder = new JLabel(currentLineComponents[i]);
+                    placeHolder.setHorizontalAlignment(JLabel.CENTER);
                     databaseMainPanel.add(placeHolder);
                 }
                 maxRows++;

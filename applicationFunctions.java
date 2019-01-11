@@ -117,9 +117,9 @@ public class applicationFunctions implements ActionListener {
                     if (!currentLineComponents[0].equals(deleteID)) {
                         bw2.write(currentLine);
                         bw2.newLine();
-                        noIDFound = true;
-                    } else {
                         noIDFound = false;
+                    } else {
+                        noIDFound = true;
                     }
                     currentLine = bw.readLine();
                 }

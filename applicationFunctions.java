@@ -72,14 +72,11 @@ public class applicationFunctions implements ActionListener {
                 
                 try {
                     String[] informationTypes = {formattedPackageID, Integer.toString(databaseBuild.databaseIDNum), applicationBuild.txtPackageName.getText(), applicationBuild.formattedDate, applicationBuild.sm.getValue().toString()};
-
                     BufferedWriter out = new BufferedWriter(new FileWriter(dataFile, true));
-
                     for (int i = 0; i < informationTypes.length; i++) {
                         out.write(informationTypes[i] + " | ");
                     }
                     out.newLine();
-
                     out.close();
                 } catch (IOException error) {
                     System.out.println("Could not create file");
@@ -97,25 +94,51 @@ public class applicationFunctions implements ActionListener {
 
         if (a.getSource() == applicationBuild.btnDelete) {
             String deleteID = JOptionPane.showInputDialog(null, "Enter the ID of the package you would like to delete", "Delete Package", 3);
-
-            String[] currentLineComponents;
-
+            File tempFile = new File("src\\temp.txt");
             try {
-                boolean isIDFound = false;
-                BufferedReader in = new BufferedReader(new FileReader(dataFile));
-                String currentLine = in.readLine();
+                String[] currentLineComponents;
+                BufferedReader bw = new BufferedReader(new FileReader(dataFile));
+                BufferedWriter bw2 = new BufferedWriter(new FileWriter(tempFile));
+                String currentLine = bw.readLine();
+                boolean noIDFound = false;
 
-                while (currentLine != null || isIDFound != true) {
+                while (currentLine != null) {
                     currentLineComponents = currentLine.split(" | ");
-                    if (currentLineComponents[0].equals(deleteID)) {
-                        isIDFound = true;
-                        System.out.println("ID Found");
+                    if (!currentLineComponents[0].equals(deleteID)) {
+                        bw2.write(currentLine);
+                        bw2.newLine();
+                        noIDFound = true;
+                    } else {
+                        noIDFound = false;
                     }
-                    currentLine = in.readLine();
-                } System.out.println("Done searching");
-                in.close();
+                    currentLine = bw.readLine();
+                }
+                if(noIDFound == false) {
+                    JOptionPane.showMessageDialog(null, "Success!", "Deletion Completed", 1);
+                } else {
+                    JOptionPane.showMessageDialog(null, "The selected ID was not found", "Deletion Failed", 1);
+                }
+                System.out.println("Done searching");
+                bw.close();
+                bw2.close();
             } catch (IOException error) {
-                System.out.print("Enter button error");
+                System.out.print("Error with deleting.");
+            }
+            try {
+                dataFile.delete();
+                dataFile = new File("src\\data.txt");
+                BufferedReader bw = new BufferedReader(new FileReader(tempFile));
+                BufferedWriter bw2 = new BufferedWriter(new FileWriter(dataFile));
+                String currentLine = bw.readLine();
+                while(currentLine != null) {
+                    bw2.write(currentLine);
+                    bw2.newLine();
+                    currentLine = bw.readLine();
+                }
+                bw.close();
+                bw2.close();
+            } catch(IOException error) {
+                System.out.println("Error rewriting the file.");
             }
         }
     }

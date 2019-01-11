@@ -13,6 +13,9 @@ public class applicationBuild extends JFrame {
     //We use the static keyword here because we want these buttons to remain the same throughout the entire program.
     //That means if I click btnView in a different class, we want to be referencing the same button throughout the whole program.
     public static JButton btnView, btnEnter, btnClear, btnDelete;;
+    //If there is only one entry then when the user clicks the view button, the database window does not display because there are
+    //no entrys into the database, and the database looks awkward.
+    public static boolean isThereOneEntry = false;
     public static String formattedDate;
     public static SpinnerModel sm;
 

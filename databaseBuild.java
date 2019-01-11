@@ -25,7 +25,7 @@ public class databaseBuild extends JFrame {
         btnPackageID = new JButton("Package ID");
         btnDateArrived = new JButton("Date Arrived");
         btnWeight = new JButton("Weight");
-
+        
         JButton[] topButtons = {btnPackageID, btnDatabaseID, btnPackageName, btnDateArrived, btnWeight};
         Dimension buttonDimension = new Dimension(0, 35);
 
@@ -33,7 +33,7 @@ public class databaseBuild extends JFrame {
             topButtons[i].setMaximumSize(buttonDimension);
             databaseMainPanel.add(topButtons[i]);
         }
-
+        
         try {
             File dataFile = new File("src//data.txt");
             BufferedReader in = new BufferedReader(new FileReader(dataFile));

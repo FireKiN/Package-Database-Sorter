@@ -6,6 +6,7 @@ public class databaseBuild extends JFrame {
         new databaseBuild();
     }
 
+    static int databaseIDNum;
     public static JButton btnDatabaseID, btnPackageName, btnPackageID, btnDateArrived, btnWeight;
     public static JPanel databaseMainPanel;
     int maxRows = 0;

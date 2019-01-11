@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.io.*;
 
 public class applicationBuild extends JFrame {
 
@@ -15,6 +16,7 @@ public class applicationBuild extends JFrame {
     //If there is only one entry then when the user clicks the view button, the database window does not display because there are
     //no entrys into the database, and the database looks awkward.
     public static boolean isThereOneEntry = false;
+    public static String formattedDate;
     public static SpinnerModel sm;
 
     public static void main(String[] args) {
@@ -55,6 +57,15 @@ public class applicationBuild extends JFrame {
         JPanel informationEntry = new JPanel(new GridLayout(5, 2, 10, 5));
         gbc.gridx = 1;
         JLabel databaseID = new JLabel("Database ID:");
+        String line = "";
+		try {
+			BufferedReader in = new BufferedReader(new FileReader(applicationFunctions.databaseIDTracker));
+			line = in.readLine();
+			databaseBuild.databaseIDNum = Integer.parseInt(line);
+ 			in.close();
+		} catch (IOException error) { 
+			System.out.println("Could not read file");
+		}
         lblDatabaseIDNum = new JLabel(Integer.toString(databaseBuild.databaseIDNum));
         lblDatabaseIDNum.setHorizontalAlignment(JLabel.CENTER);
         informationEntry.add(databaseID);
@@ -76,7 +87,8 @@ public class applicationBuild extends JFrame {
         JLabel dateArrived = new JLabel("Date Arrived:");
         Date today = new Date();
         SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd");
-        JLabel date = new JLabel(df.format(today));
+        formattedDate = df.format(today);
+        JLabel date = new JLabel(formattedDate);
         date.setHorizontalAlignment(JLabel.CENTER);
 
         informationEntry.add(dateArrived);

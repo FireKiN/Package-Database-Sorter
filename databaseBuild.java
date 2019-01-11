@@ -10,7 +10,7 @@ public class databaseBuild extends JFrame {
     static int databaseIDNum;
     public static JButton btnDatabaseID, btnPackageName, btnPackageID, btnDateArrived, btnWeight;
     public static JPanel databaseMainPanel;
-    int maxRows = 0;
+    int maxRows;
     //If there is only one entry then when the user clicks the view button, the database window does not display because there are
     //no entrys into the database, and the database looks awkward.
     public static boolean isThereOneEntry = false;
@@ -42,8 +42,8 @@ public class databaseBuild extends JFrame {
             String[] currentLineComponents;
 
             while (currentLine != null) {
-                currentLineComponents = currentLine.split(" | ");
-                for (int i = 0; i < currentLineComponents.length; i+=2) {
+                currentLineComponents = currentLine.split("<>");
+                for (int i = 0; i < currentLineComponents.length; i++) {
                     JLabel placeHolder = new JLabel(currentLineComponents[i]);
                     databaseMainPanel.add(placeHolder);
                 }

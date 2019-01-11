@@ -13,6 +13,16 @@ public class applicationFunctions implements ActionListener {
     public void actionPerformed(ActionEvent a) {
         //The reason why I use the class name to locate the button instead of creating an object from the class can be located here: http://www.dgp.toronto.edu/~trendall/course/108/lectures/L03node2.html
         if (a.getSource() == applicationBuild.btnView) {
+            try {
+                File dataFile = new File("src//data.txt");
+                BufferedReader out = new BufferedReader(new FileReader(dataFile));
+                String lineToCheck = out.readLine();
+                if (lineToCheck != null) {
+                    databaseBuild.isThereOneEntry = true;
+                }
+            }catch (IOException error) {
+                System.out.print("Error in view button");
+            }
             if (databaseBuild.isThereOneEntry == false) {
                 JOptionPane.showMessageDialog(null, "You must enter at least one package", "Error", 0);
             } else {
@@ -74,7 +84,7 @@ public class applicationFunctions implements ActionListener {
                     String[] informationTypes = {formattedPackageID, Integer.toString(databaseBuild.databaseIDNum), applicationBuild.txtPackageName.getText(), applicationBuild.formattedDate, applicationBuild.sm.getValue().toString()};
                     BufferedWriter out = new BufferedWriter(new FileWriter(dataFile, true));
                     for (int i = 0; i < informationTypes.length; i++) {
-                        out.write(informationTypes[i] + " | ");
+                        out.write(informationTypes[i] + "<>");
                     }
                     out.newLine();
                     out.close();
@@ -103,7 +113,7 @@ public class applicationFunctions implements ActionListener {
                 boolean noIDFound = false;
 
                 while (currentLine != null) {
-                    currentLineComponents = currentLine.split(" | ");
+                    currentLineComponents = currentLine.split("<>");
                     if (!currentLineComponents[0].equals(deleteID)) {
                         bw2.write(currentLine);
                         bw2.newLine();

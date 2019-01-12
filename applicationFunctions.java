@@ -3,12 +3,59 @@ import java.awt.event.*;
 import java.io.*;
 import java.text.DecimalFormat;
 import javax.swing.*;
+import java.util.*;
 
 public class applicationFunctions implements ActionListener {
 
     static int packageID;
     File dataFile = new File("src//data.txt");
     static File databaseIDTracker = new File("src\\id.txt");
+
+    class packageSort {
+        String packageIDSort;
+        String databaseIDSort;
+        String packageNameSort;
+        String dateArrivedSort;
+        double weightSort;
+
+        public packageSort(String packageIDSort, String databaseIDSort, String packageNameSort, String dateArrivedSort, double weightSort) {
+            this.packageIDSort = packageIDSort;
+            this.databaseIDSort = databaseIDSort;
+            this.packageNameSort = packageNameSort;
+            this.dateArrivedSort = dateArrivedSort;
+            this.weightSort = weightSort;
+        }
+    }
+
+    class packageIDCompare implements Comparator<packageSort> {
+        public int compare(packageSort a1, packageSort a2) {
+            return a1.packageIDSort.compareTo(a2.packageIDSort);
+        }
+    }
+
+    class databaseIDCompare implements Comparator<packageSort> {
+        public int compare(packageSort a1, packageSort a2) {
+            return a1.databaseIDSort.compareTo(a2.databaseIDSort);
+        }
+    }
+
+    class packageNameCompare implements Comparator<packageSort> {
+        public int compare(packageSort a1, packageSort a2) {
+            return a1.packageNameSort.compareTo(a2.packageNameSort);
+        }
+    }
+
+    class dateArrivedCompare implements Comparator<packageSort> {
+        public int compare(packageSort a1, packageSort a2) {
+            return a1.dateArrivedSort.compareTo(a2.dateArrivedSort);
+        }
+    }
+
+    class weightCompare implements Comparator<packageSort> {
+        public int compare(packageSort a1, packageSort a2) {
+            return Double.compare(a1.weightSort, a2.weightSort);
+        }
+    }
 
     public void actionPerformed(ActionEvent a) {
         // The reason why I use the class name to locate the button instead of
@@ -78,7 +125,7 @@ public class applicationFunctions implements ActionListener {
             DecimalFormat packageIDDF = new DecimalFormat("00000000");
             String formattedPackageID = packageIDDF.format(packageID);
 
-            if(noInvalidEntries == true) {
+            if (noInvalidEntries == true) {
                 // Try catch to check if the ID is already used in the textfile
                 // This was placed here because the program needs to obtain the
                 // formatted package ID
@@ -122,9 +169,9 @@ public class applicationFunctions implements ActionListener {
                 }
 
                 try {
-                    String[] informationTypes = { formattedPackageID, Integer.toString(databaseBuild.databaseIDNum),
+                    String[] informationTypes = {formattedPackageID, Integer.toString(databaseBuild.databaseIDNum),
                             applicationBuild.txtPackageName.getText(), applicationBuild.formattedDate,
-                            applicationBuild.sm.getValue().toString() };
+                            applicationBuild.sm.getValue().toString()};
                     BufferedWriter out = new BufferedWriter(new FileWriter(dataFile, true));
                     for (int i = 0; i < informationTypes.length; i++) {
                         out.write(informationTypes[i] + "<>");
@@ -142,7 +189,7 @@ public class applicationFunctions implements ActionListener {
             applicationBuild.txtPackageID.setBackground(Color.WHITE);
             applicationBuild.txtPackageName.setText("");
             applicationBuild.txtPackageName.setBackground(Color.WHITE);
-            applicationBuild.sm.setValue(0);
+            applicationBuild.sm.setValue(0.0);
         }
 
         if (a.getSource() == applicationBuild.btnDelete) {
@@ -191,6 +238,250 @@ public class applicationFunctions implements ActionListener {
                 }
                 br.close();
                 bw.close();
+            } catch (IOException error) {
+                System.out.println("Error rewriting the file.");
+            }
+        }
+
+        if (a.getSource() == databaseBuild.btnPackageID) {
+            File tempSort = new File("src\\tempSort.txt");
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(dataFile));
+                ArrayList<packageSort> packageIDList = new ArrayList<packageSort>();
+                String currentLine = br.readLine();
+                while (currentLine != null) {
+                    String[] currentLineComponents = currentLine.split("<>");
+                    String packageIDSort = currentLineComponents[0];
+                    String databaseIDSort = currentLineComponents[1];
+                    String packageNameSort = currentLineComponents[2];
+                    String dateArrivedSort = currentLineComponents[3];
+                    double weightSort = Double.valueOf(currentLineComponents[4]);
+                    packageIDList.add(new packageSort(packageIDSort, databaseIDSort, packageNameSort, dateArrivedSort, weightSort));
+                    currentLine = br.readLine();
+                }
+                Collections.sort(packageIDList, new packageIDCompare());
+                tempSort.delete();
+                tempSort = new File("src\\tempSort.txt");
+                BufferedWriter bw = new BufferedWriter(new FileWriter(tempSort));
+                for (packageSort packageSort : packageIDList) {
+                    bw.write(packageSort.packageIDSort + "<>" + packageSort.databaseIDSort + "<>" + packageSort.packageNameSort + "<>" + packageSort.dateArrivedSort + "<>" + packageSort.weightSort + "<>");
+                    bw.newLine();
+                }
+                br.close();
+                bw.close();
+                databaseBuild.frame.dispose();
+                new databaseBuild();
+            } catch (IOException error) {
+                System.out.println("Error sorting package ID.");
+            }
+            try {
+                dataFile.delete();
+                dataFile = new File("src\\data.txt");
+                BufferedReader br = new BufferedReader(new FileReader(tempSort));
+                BufferedWriter bw = new BufferedWriter(new FileWriter(dataFile));
+                String currentLine = br.readLine();
+                while (currentLine != null) {
+                    bw.write(currentLine);
+                    bw.newLine();
+                    currentLine = br.readLine();
+                }
+                br.close();
+                bw.close();
+                databaseBuild.frame.dispose();
+                new databaseBuild();
+            } catch (IOException error) {
+                System.out.println("Error rewriting the file.");
+            }
+        }
+
+        if (a.getSource() == databaseBuild.btnDatabaseID) {
+            File tempSort = new File("src\\tempSort.txt");
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(dataFile));
+                ArrayList<packageSort> packageIDList = new ArrayList<packageSort>();
+                String currentLine = br.readLine();
+                while (currentLine != null) {
+                    String[] currentLineComponents = currentLine.split("<>");
+                    String packageIDSort = currentLineComponents[0];
+                    String databaseIDSort = currentLineComponents[1];
+                    String packageNameSort = currentLineComponents[2];
+                    String dateArrivedSort = currentLineComponents[3];
+                    double weightSort = Double.valueOf(currentLineComponents[4]);
+                    packageIDList.add(new packageSort(packageIDSort, databaseIDSort, packageNameSort, dateArrivedSort, weightSort));
+                    currentLine = br.readLine();
+                }
+                Collections.sort(packageIDList, new databaseIDCompare());
+                tempSort.delete();
+                tempSort = new File("src\\tempSort.txt");
+                BufferedWriter bw = new BufferedWriter(new FileWriter(tempSort));
+                for (packageSort packageSort : packageIDList) {
+                    bw.write(packageSort.packageIDSort + "<>" + packageSort.databaseIDSort + "<>" + packageSort.packageNameSort + "<>" + packageSort.dateArrivedSort + "<>" + packageSort.weightSort + "<>");
+                    bw.newLine();
+                }
+                br.close();
+                bw.close();
+            } catch (IOException error) {
+                System.out.println("Error sorting package ID.");
+            }
+            try {
+                dataFile.delete();
+                dataFile = new File("src\\data.txt");
+                BufferedReader br = new BufferedReader(new FileReader(tempSort));
+                BufferedWriter bw = new BufferedWriter(new FileWriter(dataFile));
+                String currentLine = br.readLine();
+                while (currentLine != null) {
+                    bw.write(currentLine);
+                    bw.newLine();
+                    currentLine = br.readLine();
+                }
+                br.close();
+                bw.close();
+                databaseBuild.frame.dispose();
+                new databaseBuild();
+            } catch (IOException error) {
+                System.out.println("Error rewriting the file.");
+            }
+        }
+        if (a.getSource() == databaseBuild.btnPackageName) {
+            File tempSort = new File("src\\tempSort.txt");
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(dataFile));
+                ArrayList<packageSort> packageIDList = new ArrayList<packageSort>();
+                String currentLine = br.readLine();
+                while (currentLine != null) {
+                    String[] currentLineComponents = currentLine.split("<>");
+                    String packageIDSort = currentLineComponents[0];
+                    String databaseIDSort = currentLineComponents[1];
+                    String packageNameSort = currentLineComponents[2];
+                    String dateArrivedSort = currentLineComponents[3];
+                    double weightSort = Double.valueOf(currentLineComponents[4]);
+                    packageIDList.add(new packageSort(packageIDSort, databaseIDSort, packageNameSort, dateArrivedSort, weightSort));
+                    currentLine = br.readLine();
+                }
+                Collections.sort(packageIDList, new packageNameCompare());
+                tempSort.delete();
+                tempSort = new File("src\\tempSort.txt");
+                BufferedWriter bw = new BufferedWriter(new FileWriter(tempSort));
+                for (packageSort packageSort : packageIDList) {
+                    bw.write(packageSort.packageIDSort + "<>" + packageSort.databaseIDSort + "<>" + packageSort.packageNameSort + "<>" + packageSort.dateArrivedSort + "<>" + packageSort.weightSort + "<>");
+                    bw.newLine();
+                }
+                br.close();
+                bw.close();
+            } catch (IOException error) {
+                System.out.println("Error sorting package ID.");
+            }
+            try {
+                dataFile.delete();
+                dataFile = new File("src\\data.txt");
+                BufferedReader br = new BufferedReader(new FileReader(tempSort));
+                BufferedWriter bw = new BufferedWriter(new FileWriter(dataFile));
+                String currentLine = br.readLine();
+                while (currentLine != null) {
+                    bw.write(currentLine);
+                    bw.newLine();
+                    currentLine = br.readLine();
+                }
+                br.close();
+                bw.close();
+                databaseBuild.frame.dispose();
+                new databaseBuild();
+            } catch (IOException error) {
+                System.out.println("Error rewriting the file.");
+            }
+        }
+        if (a.getSource() == databaseBuild.btnDateArrived) {
+            File tempSort = new File("src\\tempSort.txt");
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(dataFile));
+                ArrayList<packageSort> packageIDList = new ArrayList<packageSort>();
+                String currentLine = br.readLine();
+                while (currentLine != null) {
+                    String[] currentLineComponents = currentLine.split("<>");
+                    String packageIDSort = currentLineComponents[0];
+                    String databaseIDSort = currentLineComponents[1];
+                    String packageNameSort = currentLineComponents[2];
+                    String dateArrivedSort = currentLineComponents[3];
+                    double weightSort = Double.valueOf(currentLineComponents[4]);
+                    packageIDList.add(new packageSort(packageIDSort, databaseIDSort, packageNameSort, dateArrivedSort, weightSort));
+                    currentLine = br.readLine();
+                }
+                Collections.sort(packageIDList, new dateArrivedCompare());
+                tempSort.delete();
+                tempSort = new File("src\\tempSort.txt");
+                BufferedWriter bw = new BufferedWriter(new FileWriter(tempSort));
+                for (packageSort packageSort : packageIDList) {
+                    bw.write(packageSort.packageIDSort + "<>" + packageSort.databaseIDSort + "<>" + packageSort.packageNameSort + "<>" + packageSort.dateArrivedSort + "<>" + packageSort.weightSort + "<>");
+                    bw.newLine();
+                }
+                br.close();
+                bw.close();
+            } catch (IOException error) {
+                System.out.println("Error sorting package ID.");
+            }
+            try {
+                dataFile.delete();
+                dataFile = new File("src\\data.txt");
+                BufferedReader br = new BufferedReader(new FileReader(tempSort));
+                BufferedWriter bw = new BufferedWriter(new FileWriter(dataFile));
+                String currentLine = br.readLine();
+                while (currentLine != null) {
+                    bw.write(currentLine);
+                    bw.newLine();
+                    currentLine = br.readLine();
+                }
+                br.close();
+                bw.close();
+                databaseBuild.frame.dispose();
+                new databaseBuild();
+            } catch (IOException error) {
+                System.out.println("Error rewriting the file.");
+            }
+        }
+        if (a.getSource() == databaseBuild.btnWeight) {
+            File tempSort = new File("src\\tempSort.txt");
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(dataFile));
+                ArrayList<packageSort> packageIDList = new ArrayList<packageSort>();
+                String currentLine = br.readLine();
+                while (currentLine != null) {
+                    String[] currentLineComponents = currentLine.split("<>");
+                    String packageIDSort = currentLineComponents[0];
+                    String databaseIDSort = currentLineComponents[1];
+                    String packageNameSort = currentLineComponents[2];
+                    String dateArrivedSort = currentLineComponents[3];
+                    double weightSort = Double.valueOf(currentLineComponents[4]);
+                    packageIDList.add(new packageSort(packageIDSort, databaseIDSort, packageNameSort, dateArrivedSort, weightSort));
+                    currentLine = br.readLine();
+                }
+                Collections.sort(packageIDList, new weightCompare());
+                tempSort.delete();
+                tempSort = new File("src\\tempSort.txt");
+                BufferedWriter bw = new BufferedWriter(new FileWriter(tempSort));
+                for (packageSort packageSort : packageIDList) {
+                    bw.write(packageSort.packageIDSort + "<>" + packageSort.databaseIDSort + "<>" + packageSort.packageNameSort + "<>" + packageSort.dateArrivedSort + "<>" + packageSort.weightSort + "<>");
+                    bw.newLine();
+                }
+                br.close();
+                bw.close();
+            } catch (IOException error) {
+                System.out.println("Error sorting package ID.");
+            }
+            try {
+                dataFile.delete();
+                dataFile = new File("src\\data.txt");
+                BufferedReader br = new BufferedReader(new FileReader(tempSort));
+                BufferedWriter bw = new BufferedWriter(new FileWriter(dataFile));
+                String currentLine = br.readLine();
+                while (currentLine != null) {
+                    bw.write(currentLine);
+                    bw.newLine();
+                    currentLine = br.readLine();
+                }
+                br.close();
+                bw.close();
+                databaseBuild.frame.dispose();
+                new databaseBuild();
             } catch (IOException error) {
                 System.out.println("Error rewriting the file.");
             }

@@ -12,7 +12,8 @@ public class applicationBuild extends JFrame {
     public static JLabel lblDatabaseIDNum;
     //We use the static keyword here because we want these buttons to remain the same throughout the entire program.
     //That means if I click btnView in a different class, we want to be referencing the same button throughout the whole program.
-    public static JButton btnView, btnEnter, btnClear, btnDelete;;
+    public static JButton btnView, btnEnter, btnClear, btnDelete;
+    ;
     //If there is only one entry then when the user clicks the view button, the database window does not display because there are
     //no entrys into the database, and the database looks awkward.
     public static boolean isThereOneEntry = false;
@@ -58,14 +59,14 @@ public class applicationBuild extends JFrame {
         gbc.gridx = 1;
         JLabel databaseID = new JLabel("Database ID:");
         String line = "";
-		try {
-			BufferedReader in = new BufferedReader(new FileReader(applicationFunctions.databaseIDTracker));
-			line = in.readLine();
-			databaseBuild.databaseIDNum = Integer.parseInt(line);
- 			in.close();
-		} catch (IOException error) { 
-			System.out.println("Could not read file");
-		}
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(applicationFunctions.databaseIDTracker));
+            line = in.readLine();
+            databaseBuild.databaseIDNum = Integer.parseInt(line);
+            in.close();
+        } catch (IOException error) {
+            System.out.println("Could not read file");
+        }
         lblDatabaseIDNum = new JLabel(Integer.toString(databaseBuild.databaseIDNum));
         lblDatabaseIDNum.setHorizontalAlignment(JLabel.CENTER);
         informationEntry.add(databaseID);
@@ -100,7 +101,7 @@ public class applicationBuild extends JFrame {
         //Centers the text of the JSpinner
         //TODO Explain more in depth and in detail so that piazza knows about what you are talking about
         JComponent editor = weight.getEditor();
-        JSpinner.DefaultEditor spinnerEditor = (JSpinner.DefaultEditor)editor;
+        JSpinner.DefaultEditor spinnerEditor = (JSpinner.DefaultEditor) editor;
         spinnerEditor.getTextField().setHorizontalAlignment(JTextField.CENTER);
 
         informationEntry.add(packageWeight);

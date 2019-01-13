@@ -67,7 +67,7 @@ public class applicationFunctions implements ActionListener {
                 JOptionPane.showMessageDialog(null, "Please enter a valid package ID", "Invalid PackageID", 3);
             }
 
-            if (applicationBuild.txtPackageID.equals("")) {
+            if (applicationBuild.txtPackageName.equals("")) {
                 isInformationCorrect = false;
                 noInvalidEntries = false;
                 applicationBuild.txtPackageName.setBackground(Color.PINK);

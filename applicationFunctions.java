@@ -3,12 +3,14 @@ import java.awt.event.*;
 import java.io.*;
 import java.text.DecimalFormat;
 import javax.swing.*;
+import java.util.regex.*;
 
 public class applicationFunctions implements ActionListener {
 
     static int packageID;
-    File dataFile = new File("src//data.txt");
+    static File dataFile = new File("src//data.txt");
     static File databaseIDTracker = new File("src\\id.txt");
+    File loginInfo = new File("src\\login.txt");
 
     public void actionPerformed(ActionEvent a) {
         // The reason why I use the class name to locate the button instead of
@@ -78,7 +80,7 @@ public class applicationFunctions implements ActionListener {
             DecimalFormat packageIDDF = new DecimalFormat("00000000");
             String formattedPackageID = packageIDDF.format(packageID);
 
-            if(noInvalidEntries == true) {
+            if (noInvalidEntries == true) {
                 // Try catch to check if the ID is already used in the textfile
                 // This was placed here because the program needs to obtain the
                 // formatted package ID
@@ -122,9 +124,9 @@ public class applicationFunctions implements ActionListener {
                 }
 
                 try {
-                    String[] informationTypes = { formattedPackageID, Integer.toString(databaseBuild.databaseIDNum),
+                    String[] informationTypes = {formattedPackageID, Integer.toString(databaseBuild.databaseIDNum),
                             applicationBuild.txtPackageName.getText(), applicationBuild.formattedDate,
-                            applicationBuild.sm.getValue().toString() };
+                            applicationBuild.sm.getValue().toString()};
                     BufferedWriter out = new BufferedWriter(new FileWriter(dataFile, true));
                     for (int i = 0; i < informationTypes.length; i++) {
                         out.write(informationTypes[i] + "<>");
@@ -142,7 +144,7 @@ public class applicationFunctions implements ActionListener {
             applicationBuild.txtPackageID.setBackground(Color.WHITE);
             applicationBuild.txtPackageName.setText("");
             applicationBuild.txtPackageName.setBackground(Color.WHITE);
-            applicationBuild.sm.setValue(0);
+            applicationBuild.sm.setValue(0.0);
         }
 
         if (a.getSource() == applicationBuild.btnDelete) {
@@ -193,6 +195,71 @@ public class applicationFunctions implements ActionListener {
                 bw.close();
             } catch (IOException error) {
                 System.out.println("Error rewriting the file.");
+            }
+        }
+
+        if(a.getSource() == applicationLogin.btnLogin) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(loginInfo));
+                String currentLine = br.readLine();
+                Boolean correctLogin = false;
+                String[] currentLineComponents;
+                while (currentLine != null) {
+                    currentLineComponents = currentLine.split("<>");
+                    if (applicationLogin.txtUser.getText().equals(currentLineComponents[0]) && new String(applicationLogin.txtPass.getPassword()).equals(currentLineComponents[1])) {
+                        correctLogin = true;
+                        break;
+                    }
+                    currentLine = br.readLine();
+                }
+                if(correctLogin == false) {
+                    JOptionPane.showMessageDialog(null, "Your username or password is incorrect. Please try again.", "Login Failed", 3);
+                } else if(correctLogin) {
+                    new applicationBuild();
+                }
+                br.close();
+                applicationLogin.frame.dispose();
+            } catch (IOException error) {
+                System.out.println("Error reading login files.");
+            }
+        }
+        if(a.getSource() == applicationLogin.btnSignUp) {
+            new applicationSignUp();
+        }
+        if(a.getSource() == applicationSignUp.btnSignUp) {
+            //regex
+            String userPattern = "^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
+            String passPattern = "^[a-z0-9._]+$";
+            Pattern patternUser = Pattern.compile(userPattern);
+            Pattern patternPass = Pattern.compile(passPattern);
+            Matcher matcherUser = patternUser.matcher(applicationSignUp.txtUserSignUp.getText());
+            Matcher matcherPass = patternPass.matcher(new String(applicationSignUp.txtPassSignUp.getPassword()));
+            if(matcherUser.matches()) {
+                applicationSignUp.signUpSuccess = true;
+            } else {
+                applicationSignUp.signUpSuccess = false;
+                JOptionPane.showMessageDialog(null, "Invalid characters exist in email", "Invalid Input", 3);
+            }
+            if(new String(applicationSignUp.txtPassSignUp.getPassword()).equals(new String(applicationSignUp.txtRePassSignUp.getPassword()))) {
+                if(matcherPass.matches()) {
+                    applicationSignUp.signUpSuccess = true;
+                } else {
+                    applicationSignUp. signUpSuccess = false;
+                    JOptionPane.showMessageDialog(null, "Invalid characters exist in password", "Invalid Input", 3);
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Passwords do not match", "Password Match", 3);
+            }
+            if (applicationSignUp.signUpSuccess == true) {
+                try {
+                    BufferedWriter bw = new BufferedWriter(new FileWriter(loginInfo, true));
+                    bw.write(applicationSignUp.txtUserSignUp.getText() + "<>" + new String(applicationSignUp.txtPassSignUp.getPassword()) + "<>");
+                    bw.newLine();
+                    bw.close();
+                    applicationSignUp.frame.dispose();
+                } catch (IOException error) {
+                    System.out.println("Error writing login files.");
+                }
             }
         }
     }

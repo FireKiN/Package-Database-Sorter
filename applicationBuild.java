@@ -10,6 +10,7 @@ public class applicationBuild extends JFrame {
     public static JTextField txtPackageID, txtPackageName;
     public JLabel lblPackageID, lblPackageName;
     public static JLabel lblDatabaseIDNum;
+    JFrame frame;
     //We use the static keyword here because we want these buttons to remain the same throughout the entire program.
     //That means if I click btnView in a different class, we want to be referencing the same button throughout the whole program.
     public static JButton btnView, btnEnter, btnClear, btnDelete;
@@ -21,10 +22,11 @@ public class applicationBuild extends JFrame {
     public static SpinnerModel sm;
 
     public static void main(String[] args) {
-        new applicationBuild();
+        new applicationLogin();
     }
 
     public applicationBuild() {
+        frame = new JFrame();
         GridBagConstraints gbc = new GridBagConstraints();
 
         JPanel mainPanel = new JPanel(new GridBagLayout());
@@ -146,13 +148,13 @@ public class applicationBuild extends JFrame {
         gbc.anchor = GridBagConstraints.CENTER;
         mainPanel.add(bottomText, gbc);
 
-        setTitle("Package Sorter");
-        setContentPane(mainPanel);
-        setSize(600, 400);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(false);
-        setVisible(true);
+        frame.setTitle("Package Sorter");
+        frame.setContentPane(mainPanel);
+        frame.setSize(600, 400);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
+        frame.setVisible(true);
         //This part of the JFrame building part sets the location of the window to the middle of the screen.
-        setLocationRelativeTo(null);
+        frame.setLocationRelativeTo(null);
     }
 }

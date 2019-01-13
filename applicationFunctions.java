@@ -67,7 +67,7 @@ public class applicationFunctions implements ActionListener {
                 JOptionPane.showMessageDialog(null, "Please enter a valid package ID", "Invalid PackageID", 3);
             }
 
-            if (applicationBuild.txtPackageName.getText().equals("")) {
+            if (applicationBuild.txtPackageID.equals("")) {
                 isInformationCorrect = false;
                 noInvalidEntries = false;
                 applicationBuild.txtPackageName.setBackground(Color.PINK);
@@ -111,9 +111,11 @@ public class applicationFunctions implements ActionListener {
                 databaseBuild.databaseIDNum++;
                 applicationBuild.lblDatabaseIDNum.setText(Integer.toString(databaseBuild.databaseIDNum));
                 databaseBuild.isThereOneEntry = true;
+
+                String packageName = applicationBuild.txtPackageName.getText();
+                String formattedPackageName = packageName.substring(0, 1).toUpperCase() + packageName.substring(1);
                 //DELETE LATER
-                System.out.println("Database ID: " + databaseBuild.databaseIDNum + " | Package ID: "
-                        + formattedPackageID + " Package Name: " + applicationBuild.txtPackageName.getText());
+                System.out.println("Database ID: " + databaseBuild.databaseIDNum + " | Package ID: " + formattedPackageID + " Package Name: " + applicationBuild.txtPackageName.getText());
 
                 try {
                     BufferedWriter out = new BufferedWriter(new FileWriter(databaseIDTracker, false));
@@ -124,9 +126,7 @@ public class applicationFunctions implements ActionListener {
                 }
 
                 try {
-                    String[] informationTypes = {formattedPackageID, Integer.toString(databaseBuild.databaseIDNum),
-                            applicationBuild.txtPackageName.getText(), applicationBuild.formattedDate,
-                            applicationBuild.sm.getValue().toString()};
+                    String[] informationTypes = {formattedPackageID, Integer.toString(databaseBuild.databaseIDNum), formattedPackageName, applicationBuild.formattedDate, applicationBuild.sm.getValue().toString()};
                     BufferedWriter out = new BufferedWriter(new FileWriter(dataFile, true));
                     for (int i = 0; i < informationTypes.length; i++) {
                         out.write(informationTypes[i] + "<>");
@@ -195,45 +195,6 @@ public class applicationFunctions implements ActionListener {
                 bw.close();
             } catch (IOException error) {
                 System.out.println("Error rewriting the file.");
-            }
-        }
-
-        if(a.getSource() == applicationLogin.btnLogin) {
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(loginInfo));
-                String[] currentLineComponents;
-                String currentLine = br.readLine();
-                Boolean correctLogin = false;
-                while (currentLine != null) {
-                    currentLineComponents = currentLine.split("<>");
-                    if (applicationLogin.txtUser.toString().equals(currentLineComponents[0]) && applicationLogin.txtPass.getPassword().toString().equals(currentLineComponents[1])) {
-                        new applicationBuild();
-                        correctLogin = true;
-                        break;
-                    }
-                    currentLine = br.readLine();
-                }
-                if(correctLogin == false) {
-                    JOptionPane.showMessageDialog(null, "Your username or password is incorrect. Please try again.", "Login Failed", 3);
-                }
-                br.close();
-                applicationLogin.frame.dispose();
-            } catch (IOException error) {
-                System.out.println("Error reading login files.");
-            }
-        }
-        if(a.getSource() == applicationLogin.btnSignUp) {
-            new applicationSignUp();
-            if(applicationSignUp.signUpSuccess == true) {
-                try {
-                    BufferedWriter bw = new BufferedWriter(new FileWriter(loginInfo, true));
-                    bw.write(applicationLogin.txtUser.toString() + "<>" + applicationLogin.txtPass.getPassword().toString() + "<>");
-                    bw.newLine();
-                    bw.close();
-                    applicationSignUp.frame.dispose();
-                } catch (IOException error) {
-                    System.out.println("Error writing login files.");
-                }
             }
         }
     }

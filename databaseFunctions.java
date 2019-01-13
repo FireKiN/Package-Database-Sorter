@@ -1,19 +1,23 @@
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.io.*;
 
 public class databaseFunctions implements ActionListener {
-    //Found a more efficient and user friendly method of sorting
-    // I found this and learned how to use it from this website
+    DecimalFormat packageIDDF = new DecimalFormat("00000000");
+
+    //Found a more efficient and user friendly method of sorting I found this and learned how to use it from this website
     // https://javaconceptoftheday.com/how-to-sort-a-text-file-in-java/
     class packageSort {
-        String packageIDSort;
-        String databaseIDSort;
+        int packageIDSort;
+        int databaseIDSort;
         String packageNameSort;
         String dateArrivedSort;
         double weightSort;
 
-        public packageSort(String packageIDSort, String databaseIDSort, String packageNameSort, String dateArrivedSort, double weightSort) {
+        public packageSort(int packageIDSort, int databaseIDSort, String packageNameSort, String dateArrivedSort, double weightSort) {
             this.packageIDSort = packageIDSort;
             this.databaseIDSort = databaseIDSort;
             this.packageNameSort = packageNameSort;
@@ -23,12 +27,12 @@ public class databaseFunctions implements ActionListener {
     }
     class packageIDCompare implements Comparator<packageSort> {
         public int compare(packageSort a1, packageSort a2) {
-            return a1.packageIDSort.compareTo(a2.packageIDSort);
+            return a1.packageIDSort - a2.packageIDSort;
         }
     }
     class databaseIDCompare implements Comparator<packageSort> {
         public int compare(packageSort a1, packageSort a2) {
-            return a1.databaseIDSort.compareTo(a2.databaseIDSort);
+            return a1.databaseIDSort - a2.databaseIDSort;
         }
     }
     class packageNameCompare implements Comparator<packageSort> {
@@ -43,9 +47,43 @@ public class databaseFunctions implements ActionListener {
     }
     class weightCompare implements Comparator<packageSort> {
         public int compare(packageSort a1, packageSort a2) {
-            return Double.compare(a1.weightSort, a2.weightSort);
+            return Double.compare(a2.weightSort, a1.weightSort);
         }
     }
+
+    public void reArrangeDatabaseBuild() {
+        databaseBuild.databaseMainPanel.removeAll();
+        Dimension buttonDimension = new Dimension(0, 35);
+
+        JButton[] topButtons = {databaseBuild.btnPackageID, databaseBuild.btnDatabaseID, databaseBuild.btnPackageName, databaseBuild.btnDateArrived, databaseBuild.btnWeight};
+
+        for (int i = 0; i < topButtons.length; i++) {
+            topButtons[i].setMaximumSize(buttonDimension);
+            databaseBuild.databaseMainPanel.add(topButtons[i]);
+        }
+
+        try {
+            File dataFile = new File("src//data.txt");
+            BufferedReader in = new BufferedReader(new FileReader(dataFile));
+            String currentLine = in.readLine();
+            String[] currentLineComponents;
+
+            while (currentLine != null) {
+                currentLineComponents = currentLine.split("<>");
+                for (int i = 0; i < currentLineComponents.length; i++) {
+                    JLabel placeHolder = new JLabel(currentLineComponents[i]);
+                    placeHolder.setHorizontalAlignment(JLabel.CENTER);
+                    databaseBuild.databaseMainPanel.add(placeHolder);
+                }
+                currentLine = in.readLine();
+            }
+            in.close();
+        } catch (IOException error) {
+            System.out.println("Database JLabel");
+        }
+        databaseBuild.databaseMainPanel.revalidate();
+    }
+
     public void actionPerformed(ActionEvent a) {
         if (a.getSource() == databaseBuild.btnPackageID) {
             File tempSort = new File("src\\tempSort.txt");
@@ -55,8 +93,8 @@ public class databaseFunctions implements ActionListener {
                 String currentLine = br.readLine();
                 while (currentLine != null) {
                     String[] currentLineComponents = currentLine.split("<>");
-                    String packageIDSort = currentLineComponents[0];
-                    String databaseIDSort = currentLineComponents[1];
+                    int packageIDSort = Integer.valueOf(currentLineComponents[0]);
+                    int databaseIDSort = Integer.valueOf(currentLineComponents[1]);
                     String packageNameSort = currentLineComponents[2];
                     String dateArrivedSort = currentLineComponents[3];
                     double weightSort = Double.valueOf(currentLineComponents[4]);
@@ -68,13 +106,11 @@ public class databaseFunctions implements ActionListener {
                 tempSort = new File("src\\tempSort.txt");
                 BufferedWriter bw = new BufferedWriter(new FileWriter(tempSort));
                 for (packageSort packageSort : packageIDList) {
-                    bw.write(packageSort.packageIDSort + "<>" + packageSort.databaseIDSort + "<>" + packageSort.packageNameSort + "<>" + packageSort.dateArrivedSort + "<>" + packageSort.weightSort + "<>");
+                    bw.write(packageIDDF.format(packageSort.packageIDSort) + "<>" + packageSort.databaseIDSort + "<>" + packageSort.packageNameSort + "<>" + packageSort.dateArrivedSort + "<>" + packageSort.weightSort + "<>");
                     bw.newLine();
                 }
                 br.close();
                 bw.close();
-                databaseBuild.frame.dispose();
-                new databaseBuild();
             } catch (IOException error) {
                 System.out.println("Error sorting package ID.");
             }
@@ -91,8 +127,7 @@ public class databaseFunctions implements ActionListener {
                 }
                 br.close();
                 bw.close();
-                databaseBuild.frame.dispose();
-                new databaseBuild();
+                reArrangeDatabaseBuild();
             } catch (IOException error) {
                 System.out.println("Error rewriting the file.");
             }
@@ -106,8 +141,8 @@ public class databaseFunctions implements ActionListener {
                 String currentLine = br.readLine();
                 while (currentLine != null) {
                     String[] currentLineComponents = currentLine.split("<>");
-                    String packageIDSort = currentLineComponents[0];
-                    String databaseIDSort = currentLineComponents[1];
+                    int packageIDSort = Integer.valueOf(currentLineComponents[0]);
+                    int databaseIDSort = Integer.valueOf(currentLineComponents[1]);
                     String packageNameSort = currentLineComponents[2];
                     String dateArrivedSort = currentLineComponents[3];
                     double weightSort = Double.valueOf(currentLineComponents[4]);
@@ -119,7 +154,7 @@ public class databaseFunctions implements ActionListener {
                 tempSort = new File("src\\tempSort.txt");
                 BufferedWriter bw = new BufferedWriter(new FileWriter(tempSort));
                 for (packageSort packageSort : packageIDList) {
-                    bw.write(packageSort.packageIDSort + "<>" + packageSort.databaseIDSort + "<>" + packageSort.packageNameSort + "<>" + packageSort.dateArrivedSort + "<>" + packageSort.weightSort + "<>");
+                    bw.write(packageIDDF.format(packageSort.packageIDSort) + "<>" + packageSort.databaseIDSort + "<>" + packageSort.packageNameSort + "<>" + packageSort.dateArrivedSort + "<>" + packageSort.weightSort + "<>");
                     bw.newLine();
                 }
                 br.close();
@@ -140,8 +175,7 @@ public class databaseFunctions implements ActionListener {
                 }
                 br.close();
                 bw.close();
-                databaseBuild.frame.dispose();
-                new databaseBuild();
+                reArrangeDatabaseBuild();
             } catch (IOException error) {
                 System.out.println("Error rewriting the file.");
             }
@@ -154,8 +188,8 @@ public class databaseFunctions implements ActionListener {
                 String currentLine = br.readLine();
                 while (currentLine != null) {
                     String[] currentLineComponents = currentLine.split("<>");
-                    String packageIDSort = currentLineComponents[0];
-                    String databaseIDSort = currentLineComponents[1];
+                    int packageIDSort = Integer.valueOf(currentLineComponents[0]);
+                    int databaseIDSort = Integer.valueOf(currentLineComponents[1]);
                     String packageNameSort = currentLineComponents[2];
                     String dateArrivedSort = currentLineComponents[3];
                     double weightSort = Double.valueOf(currentLineComponents[4]);
@@ -167,7 +201,7 @@ public class databaseFunctions implements ActionListener {
                 tempSort = new File("src\\tempSort.txt");
                 BufferedWriter bw = new BufferedWriter(new FileWriter(tempSort));
                 for (packageSort packageSort : packageIDList) {
-                    bw.write(packageSort.packageIDSort + "<>" + packageSort.databaseIDSort + "<>" + packageSort.packageNameSort + "<>" + packageSort.dateArrivedSort + "<>" + packageSort.weightSort + "<>");
+                    bw.write(packageIDDF.format(packageSort.packageIDSort) + "<>" + packageSort.databaseIDSort + "<>" + packageSort.packageNameSort + "<>" + packageSort.dateArrivedSort + "<>" + packageSort.weightSort + "<>");
                     bw.newLine();
                 }
                 br.close();
@@ -188,8 +222,7 @@ public class databaseFunctions implements ActionListener {
                 }
                 br.close();
                 bw.close();
-                databaseBuild.frame.dispose();
-                new databaseBuild();
+                reArrangeDatabaseBuild();
             } catch (IOException error) {
                 System.out.println("Error rewriting the file.");
             }
@@ -202,8 +235,8 @@ public class databaseFunctions implements ActionListener {
                 String currentLine = br.readLine();
                 while (currentLine != null) {
                     String[] currentLineComponents = currentLine.split("<>");
-                    String packageIDSort = currentLineComponents[0];
-                    String databaseIDSort = currentLineComponents[1];
+                    int packageIDSort = Integer.valueOf(currentLineComponents[0]);
+                    int databaseIDSort = Integer.valueOf(currentLineComponents[1]);
                     String packageNameSort = currentLineComponents[2];
                     String dateArrivedSort = currentLineComponents[3];
                     double weightSort = Double.valueOf(currentLineComponents[4]);
@@ -215,7 +248,7 @@ public class databaseFunctions implements ActionListener {
                 tempSort = new File("src\\tempSort.txt");
                 BufferedWriter bw = new BufferedWriter(new FileWriter(tempSort));
                 for (packageSort packageSort : packageIDList) {
-                    bw.write(packageSort.packageIDSort + "<>" + packageSort.databaseIDSort + "<>" + packageSort.packageNameSort + "<>" + packageSort.dateArrivedSort + "<>" + packageSort.weightSort + "<>");
+                    bw.write(packageIDDF.format(packageSort.packageIDSort) + "<>" + packageSort.databaseIDSort + "<>" + packageSort.packageNameSort + "<>" + packageSort.dateArrivedSort + "<>" + packageSort.weightSort + "<>");
                     bw.newLine();
                 }
                 br.close();
@@ -236,8 +269,7 @@ public class databaseFunctions implements ActionListener {
                 }
                 br.close();
                 bw.close();
-                databaseBuild.frame.dispose();
-                new databaseBuild();
+                reArrangeDatabaseBuild();
             } catch (IOException error) {
                 System.out.println("Error rewriting the file.");
             }
@@ -250,8 +282,8 @@ public class databaseFunctions implements ActionListener {
                 String currentLine = br.readLine();
                 while (currentLine != null) {
                     String[] currentLineComponents = currentLine.split("<>");
-                    String packageIDSort = currentLineComponents[0];
-                    String databaseIDSort = currentLineComponents[1];
+                    int packageIDSort = Integer.valueOf(currentLineComponents[0]);
+                    int databaseIDSort = Integer.valueOf(currentLineComponents[1]);
                     String packageNameSort = currentLineComponents[2];
                     String dateArrivedSort = currentLineComponents[3];
                     double weightSort = Double.valueOf(currentLineComponents[4]);
@@ -263,7 +295,7 @@ public class databaseFunctions implements ActionListener {
                 tempSort = new File("src\\tempSort.txt");
                 BufferedWriter bw = new BufferedWriter(new FileWriter(tempSort));
                 for (packageSort packageSort : packageIDList) {
-                    bw.write(packageSort.packageIDSort + "<>" + packageSort.databaseIDSort + "<>" + packageSort.packageNameSort + "<>" + packageSort.dateArrivedSort + "<>" + packageSort.weightSort + "<>");
+                    bw.write(packageIDDF.format(packageSort.packageIDSort) + "<>" + packageSort.databaseIDSort + "<>" + packageSort.packageNameSort + "<>" + packageSort.dateArrivedSort + "<>" + packageSort.weightSort + "<>");
                     bw.newLine();
                 }
                 br.close();
@@ -284,8 +316,7 @@ public class databaseFunctions implements ActionListener {
                 }
                 br.close();
                 bw.close();
-                databaseBuild.frame.dispose();
-                new databaseBuild();
+                reArrangeDatabaseBuild();
             } catch (IOException error) {
                 System.out.println("Error rewriting the file.");
             }

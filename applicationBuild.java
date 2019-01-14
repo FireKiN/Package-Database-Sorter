@@ -22,7 +22,7 @@ public class applicationBuild extends JFrame {
     public static SpinnerModel sm;
 
     public static void main(String[] args) {
-        new applicationBuild();
+        new applicationLogin();
     }
 
     public applicationBuild() {

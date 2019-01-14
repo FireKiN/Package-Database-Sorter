@@ -3,7 +3,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.text.DecimalFormat;
 import javax.swing.*;
-import java.util.*;
+import java.util.regex.*;
 
 public class applicationFunctions implements ActionListener {
 
@@ -67,7 +67,7 @@ public class applicationFunctions implements ActionListener {
                 JOptionPane.showMessageDialog(null, "Please enter a valid package ID", "Invalid PackageID", 3);
             }
 
-            if (applicationBuild.txtPackageName.equals("")) {
+            if (applicationBuild.txtPackageName.getText().equals("")) {
                 isInformationCorrect = false;
                 noInvalidEntries = false;
                 applicationBuild.txtPackageName.setBackground(Color.PINK);
@@ -111,7 +111,7 @@ public class applicationFunctions implements ActionListener {
                 databaseBuild.databaseIDNum++;
                 applicationBuild.lblDatabaseIDNum.setText(Integer.toString(databaseBuild.databaseIDNum));
                 databaseBuild.isThereOneEntry = true;
-
+              
                 String packageName = applicationBuild.txtPackageName.getText();
                 String formattedPackageName = packageName.substring(0, 1).toUpperCase() + packageName.substring(1);
                 //DELETE LATER
@@ -127,6 +127,7 @@ public class applicationFunctions implements ActionListener {
 
                 try {
                     String[] informationTypes = {formattedPackageID, Integer.toString(databaseBuild.databaseIDNum), formattedPackageName, applicationBuild.formattedDate, applicationBuild.sm.getValue().toString()};
+                  
                     BufferedWriter out = new BufferedWriter(new FileWriter(dataFile, true));
                     for (int i = 0; i < informationTypes.length; i++) {
                         out.write(informationTypes[i] + "<>");
@@ -195,6 +196,72 @@ public class applicationFunctions implements ActionListener {
                 bw.close();
             } catch (IOException error) {
                 System.out.println("Error rewriting the file.");
+            }
+        }
+
+        if(a.getSource() == applicationLogin.btnLogin) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(loginInfo));
+                String currentLine = br.readLine();
+                Boolean correctLogin = false;
+                String[] currentLineComponents;
+                while (currentLine != null) {
+                    currentLineComponents = currentLine.split("<>");
+                    if (applicationLogin.txtUser.getText().equals(currentLineComponents[0]) && new String(applicationLogin.txtPass.getPassword()).equals(currentLineComponents[1])) {
+                        correctLogin = true;
+                        break;
+                    }
+                    currentLine = br.readLine();
+                }
+                if(correctLogin == false) {
+                    JOptionPane.showMessageDialog(null, "Your username or password is incorrect. Please try again.", "Login Failed", 3);
+                } else if(correctLogin) {
+                    new applicationBuild();
+                }
+                br.close();
+                applicationLogin.frame.dispose();
+            } catch (IOException error) {
+                System.out.println("Error reading login files.");
+            }
+        }
+        if(a.getSource() == applicationLogin.btnSignUp) {
+            new applicationSignUp();
+        }
+        if(a.getSource() == applicationSignUp.btnSignUp) {
+            //regex
+            String userPattern = "^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
+            String passPattern = "^[a-z0-9._]+$";
+            Pattern patternUser = Pattern.compile(userPattern);
+            Pattern patternPass = Pattern.compile(passPattern);
+            Matcher matcherUser = patternUser.matcher(applicationSignUp.txtUserSignUp.getText());
+            Matcher matcherPass = patternPass.matcher(new String(applicationSignUp.txtPassSignUp.getPassword()));
+            if(matcherUser.matches()) {
+                if(new String(applicationSignUp.txtPassSignUp.getPassword()).equals(new String(applicationSignUp.txtRePassSignUp.getPassword()))) {
+                    if(matcherPass.matches()) {
+                        applicationSignUp.signUpSuccess = true;
+                    } else {
+                        applicationSignUp. signUpSuccess = false;
+                        JOptionPane.showMessageDialog(null, "Invalid characters exist in password", "Invalid Input", 3);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Passwords do not match", "Password Match", 3);
+                }
+            } else {
+                applicationSignUp.signUpSuccess = false;
+                JOptionPane.showMessageDialog(null, "Invalid characters exist in email", "Invalid Input", 3);
+            }
+
+            if (applicationSignUp.signUpSuccess == true) {
+                JOptionPane.showMessageDialog(null, "A confirmation email has been sent to "+ applicationSignUp.txtUserSignUp.getText() + ".", "Signed Up!", 1);
+                try {
+                    BufferedWriter bw = new BufferedWriter(new FileWriter(loginInfo, true));
+                    bw.write(applicationSignUp.txtUserSignUp.getText() + "<>" + new String(applicationSignUp.txtPassSignUp.getPassword()) + "<>");
+                    bw.newLine();
+                    bw.close();
+                    applicationSignUp.frame.dispose();
+                } catch (IOException error) {
+                    System.out.println("Error writing login files.");
+                }
             }
         }
     }

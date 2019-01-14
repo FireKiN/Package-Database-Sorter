@@ -33,7 +33,7 @@ public class databaseBuild extends JFrame {
         for (int i = 0; i < topButtons.length; i++) {
             topButtons[i].setMaximumSize(buttonDimension);
             databaseMainPanel.add(topButtons[i]);
-            topButtons[i].addActionListener(new applicationFunctions());
+            topButtons[i].addActionListener(new databaseFunctions());
         }
 
         try {

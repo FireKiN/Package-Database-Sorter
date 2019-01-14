@@ -111,9 +111,11 @@ public class applicationFunctions implements ActionListener {
                 databaseBuild.databaseIDNum++;
                 applicationBuild.lblDatabaseIDNum.setText(Integer.toString(databaseBuild.databaseIDNum));
                 databaseBuild.isThereOneEntry = true;
+              
+                String packageName = applicationBuild.txtPackageName.getText();
+                String formattedPackageName = packageName.substring(0, 1).toUpperCase() + packageName.substring(1);
                 //DELETE LATER
-                System.out.println("Database ID: " + databaseBuild.databaseIDNum + " | Package ID: "
-                        + formattedPackageID + " Package Name: " + applicationBuild.txtPackageName.getText());
+                System.out.println("Database ID: " + databaseBuild.databaseIDNum + " | Package ID: " + formattedPackageID + " Package Name: " + applicationBuild.txtPackageName.getText());
 
                 try {
                     BufferedWriter out = new BufferedWriter(new FileWriter(databaseIDTracker, false));
@@ -124,9 +126,8 @@ public class applicationFunctions implements ActionListener {
                 }
 
                 try {
-                    String[] informationTypes = {formattedPackageID, Integer.toString(databaseBuild.databaseIDNum),
-                            applicationBuild.txtPackageName.getText(), applicationBuild.formattedDate,
-                            applicationBuild.sm.getValue().toString()};
+                    String[] informationTypes = {formattedPackageID, Integer.toString(databaseBuild.databaseIDNum), formattedPackageName, applicationBuild.formattedDate, applicationBuild.sm.getValue().toString()};
+                  
                     BufferedWriter out = new BufferedWriter(new FileWriter(dataFile, true));
                     for (int i = 0; i < informationTypes.length; i++) {
                         out.write(informationTypes[i] + "<>");

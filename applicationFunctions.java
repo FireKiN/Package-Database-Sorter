@@ -235,22 +235,23 @@ public class applicationFunctions implements ActionListener {
             Matcher matcherUser = patternUser.matcher(applicationSignUp.txtUserSignUp.getText());
             Matcher matcherPass = patternPass.matcher(new String(applicationSignUp.txtPassSignUp.getPassword()));
             if(matcherUser.matches()) {
-                applicationSignUp.signUpSuccess = true;
+                if(new String(applicationSignUp.txtPassSignUp.getPassword()).equals(new String(applicationSignUp.txtRePassSignUp.getPassword()))) {
+                    if(matcherPass.matches()) {
+                        applicationSignUp.signUpSuccess = true;
+                    } else {
+                        applicationSignUp. signUpSuccess = false;
+                        JOptionPane.showMessageDialog(null, "Invalid characters exist in password", "Invalid Input", 3);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Passwords do not match", "Password Match", 3);
+                }
             } else {
                 applicationSignUp.signUpSuccess = false;
                 JOptionPane.showMessageDialog(null, "Invalid characters exist in email", "Invalid Input", 3);
             }
-            if(new String(applicationSignUp.txtPassSignUp.getPassword()).equals(new String(applicationSignUp.txtRePassSignUp.getPassword()))) {
-                if(matcherPass.matches()) {
-                    applicationSignUp.signUpSuccess = true;
-                } else {
-                    applicationSignUp. signUpSuccess = false;
-                    JOptionPane.showMessageDialog(null, "Invalid characters exist in password", "Invalid Input", 3);
-                }
-            } else {
-                JOptionPane.showMessageDialog(null, "Passwords do not match", "Password Match", 3);
-            }
+
             if (applicationSignUp.signUpSuccess == true) {
+                JOptionPane.showMessageDialog(null, "A confirmation email has been sent to "+ applicationSignUp.txtUserSignUp.getText() + ".", "Signed Up!", 1);
                 try {
                     BufferedWriter bw = new BufferedWriter(new FileWriter(loginInfo, true));
                     bw.write(applicationSignUp.txtUserSignUp.getText() + "<>" + new String(applicationSignUp.txtPassSignUp.getPassword()) + "<>");

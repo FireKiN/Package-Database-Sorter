@@ -3,12 +3,17 @@ import java.awt.event.*;
 import java.io.*;
 import java.text.DecimalFormat;
 import javax.swing.*;
+import java.util.regex.*;
+import javax.mail.*;
+import javax.mail.internet.*;
+import java.util.*;
 
 public class applicationFunctions implements ActionListener {
 
     static int packageID;
-    File dataFile = new File("src//data.txt");
+    static File dataFile = new File("src//data.txt");
     static File databaseIDTracker = new File("src\\id.txt");
+    File loginInfo = new File("src\\login.txt");
 
     public void actionPerformed(ActionEvent a) {
         // The reason why I use the class name to locate the button instead of
@@ -78,7 +83,7 @@ public class applicationFunctions implements ActionListener {
             DecimalFormat packageIDDF = new DecimalFormat("00000000");
             String formattedPackageID = packageIDDF.format(packageID);
 
-            if(noInvalidEntries == true) {
+            if (noInvalidEntries == true) {
                 // Try catch to check if the ID is already used in the textfile
                 // This was placed here because the program needs to obtain the
                 // formatted package ID
@@ -109,10 +114,9 @@ public class applicationFunctions implements ActionListener {
                 databaseBuild.databaseIDNum++;
                 applicationBuild.lblDatabaseIDNum.setText(Integer.toString(databaseBuild.databaseIDNum));
                 databaseBuild.isThereOneEntry = true;
-                //DELETE LATER
-                System.out.println("Database ID: " + databaseBuild.databaseIDNum + " | Package ID: "
-                        + formattedPackageID + " Package Name: " + applicationBuild.txtPackageName.getText());
 
+                String packageName = applicationBuild.txtPackageName.getText();
+                String formattedPackageName = packageName.substring(0, 1).toUpperCase() + packageName.substring(1);
                 try {
                     BufferedWriter out = new BufferedWriter(new FileWriter(databaseIDTracker, false));
                     out.write(Integer.toString(databaseBuild.databaseIDNum));
@@ -122,9 +126,8 @@ public class applicationFunctions implements ActionListener {
                 }
 
                 try {
-                    String[] informationTypes = { formattedPackageID, Integer.toString(databaseBuild.databaseIDNum),
-                            applicationBuild.txtPackageName.getText(), applicationBuild.formattedDate,
-                            applicationBuild.sm.getValue().toString() };
+                    String[] informationTypes = {formattedPackageID, Integer.toString(databaseBuild.databaseIDNum), formattedPackageName, applicationBuild.formattedDate, applicationBuild.sm.getValue().toString()};
+
                     BufferedWriter out = new BufferedWriter(new FileWriter(dataFile, true));
                     for (int i = 0; i < informationTypes.length; i++) {
                         out.write(informationTypes[i] + "<>");
@@ -142,57 +145,156 @@ public class applicationFunctions implements ActionListener {
             applicationBuild.txtPackageID.setBackground(Color.WHITE);
             applicationBuild.txtPackageName.setText("");
             applicationBuild.txtPackageName.setBackground(Color.WHITE);
-            applicationBuild.sm.setValue(0);
+            applicationBuild.sm.setValue(0.0);
         }
 
         if (a.getSource() == applicationBuild.btnDelete) {
             String deleteID = JOptionPane.showInputDialog(null, "Enter the ID of the package you would like to delete",
                     "Delete Package", 3);
-            File tempFile = new File("src\\temp.txt");
-            try {
-                String[] currentLineComponents;
-                BufferedReader br = new BufferedReader(new FileReader(dataFile));
-                BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile));
-                String currentLine = br.readLine();
-                boolean noIDFound = false;
+            if (deleteID != null) {
+                if (deleteID.equals("")) {
+                    JOptionPane.showMessageDialog(null, "The selected ID was not found", "Deletion Failed", 3);
+                } else {
+                    File tempFile = new File("src\\temp.txt");
+                    try {
+                        String[] currentLineComponents;
+                        BufferedReader br = new BufferedReader(new FileReader(dataFile));
+                        BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile));
+                        String currentLine = br.readLine();
+                        boolean noIDFound = true;
 
+                        while (currentLine != null) {
+                            currentLineComponents = currentLine.split("<>");
+                            if(currentLineComponents[0].equals(deleteID)) {
+                                noIDFound = false;
+                            }
+                            if (!currentLineComponents[0].equals(deleteID)) {
+                                bw.write(currentLine);
+                                bw.newLine();
+                            }
+                            currentLine = br.readLine();
+                        }
+                        if (noIDFound == false) {
+                            JOptionPane.showMessageDialog(null, "Success!", "Deletion Completed", 1);
+                        } else {
+                            JOptionPane.showMessageDialog(null, "The selected ID was not found", "Deletion Failed", 3);
+                        }
+                        br.close();
+                        bw.close();
+                    } catch (IOException error) {
+                        System.out.print("Error with deleting.");
+                    }
+                    try {
+                        dataFile.delete();
+                        dataFile = new File("src\\data.txt");
+                        BufferedReader br = new BufferedReader(new FileReader(tempFile));
+                        BufferedWriter bw = new BufferedWriter(new FileWriter(dataFile));
+                        String currentLine = br.readLine();
+                        while (currentLine != null) {
+                            bw.write(currentLine);
+                            bw.newLine();
+                            currentLine = br.readLine();
+                        }
+                        br.close();
+                        bw.close();
+                    } catch (IOException error) {
+                        System.out.println("Error rewriting the file.");
+                    }
+                }
+            }
+        }
+
+
+        if (a.getSource() == applicationLogin.btnLogin) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(loginInfo));
+                String currentLine = br.readLine();
+                Boolean correctLogin = false;
+                String[] currentLineComponents;
                 while (currentLine != null) {
                     currentLineComponents = currentLine.split("<>");
-                    if (!currentLineComponents[0].equals(deleteID)) {
-                        bw.write(currentLine);
-                        bw.newLine();
-                        noIDFound = false;
-                    } else {
-                        noIDFound = true;
+                    if (applicationLogin.txtUser.getText().equals(currentLineComponents[0]) && new String(applicationLogin.txtPass.getPassword()).equals(currentLineComponents[1])) {
+                        correctLogin = true;
+                        break;
                     }
                     currentLine = br.readLine();
                 }
-                if (noIDFound == false) {
-                    JOptionPane.showMessageDialog(null, "Success!", "Deletion Completed", 1);
-                } else {
-                    JOptionPane.showMessageDialog(null, "The selected ID was not found", "Deletion Failed", 3);
+                if (correctLogin == false) {
+                    JOptionPane.showMessageDialog(null, "Your username or password is incorrect. Please try again.", "Login Failed", 0);
+                } else if (correctLogin) {
+                    new applicationBuild();
+                    applicationLogin.frame.dispose();
                 }
-                System.out.println("Done searching");
                 br.close();
-                bw.close();
             } catch (IOException error) {
-                System.out.print("Error with deleting.");
+                System.out.println("Error reading login files.");
             }
-            try {
-                dataFile.delete();
-                dataFile = new File("src\\data.txt");
-                BufferedReader br = new BufferedReader(new FileReader(tempFile));
-                BufferedWriter bw = new BufferedWriter(new FileWriter(dataFile));
-                String currentLine = br.readLine();
-                while (currentLine != null) {
-                    bw.write(currentLine);
-                    bw.newLine();
-                    currentLine = br.readLine();
+        }
+        if (a.getSource() == applicationLogin.btnSignUp) {
+            new applicationSignUp();
+        }
+        if (a.getSource() == applicationSignUp.btnSignUp) {
+            //regex
+            String userPattern = "^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
+            String passPattern = "^[a-z0-9._]+$";
+            Pattern patternUser = Pattern.compile(userPattern);
+            Pattern patternPass = Pattern.compile(passPattern);
+            Matcher matcherUser = patternUser.matcher(applicationSignUp.txtUserSignUp.getText());
+            Matcher matcherPass = patternPass.matcher(new String(applicationSignUp.txtPassSignUp.getPassword()));
+            if (matcherUser.matches()) {
+                if (new String(applicationSignUp.txtPassSignUp.getPassword()).equals(new String(applicationSignUp.txtRePassSignUp.getPassword()))) {
+                    if (matcherPass.matches()) {
+                        applicationSignUp.signUpSuccess = true;
+                    } else {
+                        applicationSignUp.signUpSuccess = false;
+                        JOptionPane.showMessageDialog(null, "Invalid characters exist in password", "Invalid Input", 0);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Passwords do not match", "Password Match", 0);
                 }
-                br.close();
-                bw.close();
-            } catch (IOException error) {
-                System.out.println("Error rewriting the file.");
+            } else {
+                applicationSignUp.signUpSuccess = false;
+                JOptionPane.showMessageDialog(null, "Invalid characters exist in email", "Invalid Input", 0);
+            }
+
+            if (applicationSignUp.signUpSuccess == true) {
+                JOptionPane.showMessageDialog(null, "A confirmation email has been sent to " + applicationSignUp.txtUserSignUp.getText() + ".", "Signed Up!", 1);
+                String to = applicationSignUp.txtUserSignUp.getText();
+                String emailHost = "smtp.gmail.com";
+                String from = "packagesortersignup";
+                String fromPass = "ryanjaycpt";
+                Properties properties = System.getProperties();
+                properties = System.getProperties();
+                properties.put("mail.smtp.starttls.enable", "true");
+                properties.put("mail.smtp.host", emailHost);
+                properties.put("mail.smtp.user", from);
+                properties.put("mail.smtp.password", fromPass);
+                properties.put("mail.smtp.port", "587");
+                properties.put("mail.smtp.auth", "true");
+                Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(from, fromPass);
+                    }
+                });
+                MimeMessage message = new MimeMessage(session);
+                try {
+                    message.setFrom(new InternetAddress(from));
+                    message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+                    message.setSubject("Confirmation of account creation with Package Sorter.");
+                    message.setContent("<h1>hi</h1>, ", "text/html");
+                    Transport.send(message, to, from);
+                } catch (Exception m) {
+                    System.out.println("Error sending email.");
+                }
+                try {
+                    BufferedWriter bw = new BufferedWriter(new FileWriter(loginInfo, true));
+                    bw.write(applicationSignUp.txtUserSignUp.getText() + "<>" + new String(applicationSignUp.txtPassSignUp.getPassword()) + "<>");
+                    bw.newLine();
+                    bw.close();
+                    applicationSignUp.frame.dispose();
+                } catch (IOException error) {
+                    System.out.println("Error writing login files.");
+                }
             }
         }
     }

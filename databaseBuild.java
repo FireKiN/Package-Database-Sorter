@@ -9,6 +9,7 @@ public class databaseBuild extends JFrame {
 
     static int databaseIDNum;
     public static JButton btnDatabaseID, btnPackageName, btnPackageID, btnDateArrived, btnWeight;
+    public static JFrame frame;
     public static JPanel databaseMainPanel;
     int maxRows;
     //If there is only one entry then when the user clicks the view button, the database window does not display because there are
@@ -16,7 +17,7 @@ public class databaseBuild extends JFrame {
     public static boolean isThereOneEntry = false;
 
     public databaseBuild() {
-
+        frame = new JFrame();
         databaseMainPanel = new JPanel();
         databaseMainPanel.setLayout(new GridLayout(maxRows++, 5));
 
@@ -25,20 +26,20 @@ public class databaseBuild extends JFrame {
         btnPackageID = new JButton("Package ID");
         btnDateArrived = new JButton("Date Arrived");
         btnWeight = new JButton("Weight");
-        
+
         JButton[] topButtons = {btnPackageID, btnDatabaseID, btnPackageName, btnDateArrived, btnWeight};
         Dimension buttonDimension = new Dimension(0, 35);
 
         for (int i = 0; i < topButtons.length; i++) {
             topButtons[i].setMaximumSize(buttonDimension);
             databaseMainPanel.add(topButtons[i]);
+            topButtons[i].addActionListener(new databaseFunctions());
         }
-        
+
         try {
             File dataFile = new File("src//data.txt");
             BufferedReader in = new BufferedReader(new FileReader(dataFile));
             String currentLine = in.readLine();
-
             String[] currentLineComponents;
 
             while (currentLine != null) {
@@ -53,15 +54,15 @@ public class databaseBuild extends JFrame {
             }
             in.close();
         } catch (IOException error) {
-            System.out.println("Database JLabel ");
+            System.out.println("Database JLabel");
         }
 
-        setTitle("Package Sorter");
-        setContentPane(databaseMainPanel);
-        setSize(1000,maxRows*30);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setResizable(false);
-        setVisible(true);
-        setLocationRelativeTo(null);
+        frame.setTitle("Package Sorter");
+        frame.setContentPane(databaseMainPanel);
+        frame.setSize(1000, maxRows * 30);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setResizable(false);
+        frame.setVisible(true);
+        frame.setLocationRelativeTo(null);
     }
 }

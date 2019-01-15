@@ -16,8 +16,7 @@ public class applicationFunctions implements ActionListener {
     File loginInfo = new File("src\\login.txt");
 
     public void actionPerformed(ActionEvent a) {
-        // The reason why I use the class name to locate the button instead of
-        // creating an object from the class can be located here:
+        // The reason why I use the class name to locate the button instead of creating an object from the class can be located here:
         // http://www.dgp.toronto.edu/~trendall/course/108/lectures/L03node2.html
         if (a.getSource() == applicationBuild.btnView) {
             try {
@@ -38,55 +37,46 @@ public class applicationFunctions implements ActionListener {
         }
 
         if (a.getSource() == applicationBuild.btnEnter) {
-            // This variable is going to be used to check if the information
-            // entered is correct. There is going to be an if statement checking
-            // to see if it is correct, and if it is, the program will proceed.
+            // This variable is going to be used to check if the information entered is correct. There is going to be an if statement checking to see if it is
+            // correct, and if it is, the program will proceed.
             boolean isInformationCorrect = true;
             boolean noInvalidEntries = true;
             try {
                 packageID = Integer.parseInt(applicationBuild.txtPackageID.getText());
                 applicationBuild.txtPackageID.setBackground(Color.WHITE);
                 if (packageID < 0 || packageID > 99999999) {
-                    // The packageID needs to be an 8 digit number so if it is
-                    // more than 8 digits or a number less than 0, the packageID
-                    // is incorrect,
-                    // Rendering the information also incorrect hence the next
-                    // boolean.
+                    // The packageID needs to be an 8 digit number so if it is more than 8 digits or a number less than 0, the packageID is incorrect, Rendering
+                    // the information also incorrect hence the next boolean.
                     isInformationCorrect = false;
                     noInvalidEntries = false;
-                    // This exception is thrown to make sure that the catch
-                    // statement is run because the JOptionPane needs to be ran
-                    // and the background
-                    // needs to be changed to pink since the information is
-                    // wrong.
+                    // This exception is thrown to make sure that the catch statement is run because the JOptionPane needs to be ran and the background needs to be
+                    // changed to pink since the information is wrong.
                     throw new NumberFormatException();
                 } else {
                     isInformationCorrect = true;
                     noInvalidEntries = true;
+                    if (applicationBuild.txtPackageName.getText().equals("")) {
+                        isInformationCorrect = false;
+                        noInvalidEntries = false;
+                        applicationBuild.txtPackageName.setBackground(Color.PINK);
+                        JOptionPane.showMessageDialog(null, "Please enter a package name", "Invalid Package Name", 3);
+                    } else {
+                        noInvalidEntries = true;
+                        applicationBuild.txtPackageName.setBackground(Color.WHITE);
+                    }
                 }
             } catch (NumberFormatException error) {
                 isInformationCorrect = false;
+                noInvalidEntries = false;
                 applicationBuild.txtPackageID.setBackground(Color.PINK);
                 JOptionPane.showMessageDialog(null, "Please enter a valid package ID", "Invalid PackageID", 3);
-            }
-
-            if (applicationBuild.txtPackageName.getText().equals("")) {
-                isInformationCorrect = false;
-                noInvalidEntries = false;
-                applicationBuild.txtPackageName.setBackground(Color.PINK);
-                JOptionPane.showMessageDialog(null, "Please enter a package name", "Invalid Package Name", 3);
-            } else {
-                noInvalidEntries = true;
-                applicationBuild.txtPackageName.setBackground(Color.WHITE);
             }
 
             DecimalFormat packageIDDF = new DecimalFormat("00000000");
             String formattedPackageID = packageIDDF.format(packageID);
 
             if (noInvalidEntries == true) {
-                // Try catch to check if the ID is already used in the textfile
-                // This was placed here because the program needs to obtain the
-                // formatted package ID
+                // Try catch to check if the ID is already used in the textfile This was placed here because the program needs to obtain the formatted package ID
                 try {
                     String[] currentLineComponents;
                     BufferedReader br = new BufferedReader(new FileReader(dataFile));
@@ -258,7 +248,6 @@ public class applicationFunctions implements ActionListener {
             }
 
             if (applicationSignUp.signUpSuccess == true) {
-                JOptionPane.showMessageDialog(null, "A confirmation email has been sent to " + applicationSignUp.txtUserSignUp.getText() + ".", "Signed Up!", 1);
                 String to = applicationSignUp.txtUserSignUp.getText();
                 String emailHost = "smtp.gmail.com";
                 String from = "packagesortersignup";
@@ -295,6 +284,7 @@ public class applicationFunctions implements ActionListener {
                 } catch (IOException error) {
                     System.out.println("Error writing login files.");
                 }
+                JOptionPane.showMessageDialog(null, "A confirmation email has been sent to " + applicationSignUp.txtUserSignUp.getText() + ".", "Signed Up!", 1);
             }
         }
     }

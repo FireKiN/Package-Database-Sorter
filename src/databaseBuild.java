@@ -1,24 +1,18 @@
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.io.*;
 
 public class databaseBuild extends JFrame {
-    public static void main(String[] args) {
-        new databaseBuild();
-    }
-
     static int databaseIDNum;
     public static JButton btnDatabaseID, btnPackageName, btnPackageID, btnDateArrived, btnWeight;
-    public static JFrame frame;
     public static JPanel databaseMainPanel;
+    // the number of rows that the window will have. this number changes as new data is entered and more rows need to be added.
     int maxRows;
     //If there is only one entry then when the user clicks the view button, the database window does not display because there are
-    //no entrys into the database, and the database looks awkward.
+    //no entries into the database, and the database looks awkward.
     public static boolean isThereOneEntry = false;
 
     public databaseBuild() {
-        frame = new JFrame();
         databaseMainPanel = new JPanel();
         databaseMainPanel.setLayout(new GridLayout(maxRows++, 5));
 
@@ -28,19 +22,22 @@ public class databaseBuild extends JFrame {
         btnDateArrived = new JButton("Date Arrived");
         btnWeight = new JButton("Weight");
 
+        // adds the buttons to an array so that it can be added to the main panel more efficiently.
         JButton[] topButtons = {btnPackageID, btnDatabaseID, btnPackageName, btnDateArrived, btnWeight};
         Dimension buttonDimension = new Dimension(0, 35);
 
         for (int i = 0; i < topButtons.length; i++) {
             topButtons[i].setMaximumSize(buttonDimension);
-            topButtons[i].setBackground(Color.LIGHT_GRAY);
             databaseMainPanel.add(topButtons[i]);
             topButtons[i].addActionListener(new databaseFunctions());
         }
 
+        // try statement that writes all the contents of data.txt to the databaseBuild window so that the user can view all
+        // of the package entries and all the information that follows.
         try {
             File dataFile = new File("src//data.txt");
             BufferedReader in = new BufferedReader(new FileReader(dataFile));
+
             String currentLine = in.readLine();
             String[] currentLineComponents;
 
@@ -48,8 +45,6 @@ public class databaseBuild extends JFrame {
                 currentLineComponents = currentLine.split("<>");
                 for (int i = 0; i < currentLineComponents.length; i++) {
                     JLabel placeHolder = new JLabel(currentLineComponents[i]);
-                    Border borderPlaceHolder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
-                    placeHolder.setBorder(borderPlaceHolder);
                     placeHolder.setHorizontalAlignment(JLabel.CENTER);
                     databaseMainPanel.add(placeHolder);
                 }
@@ -61,12 +56,12 @@ public class databaseBuild extends JFrame {
             System.out.println("Database JLabel");
         }
 
-        frame.setTitle("Package Sorter");
-        frame.setContentPane(databaseMainPanel);
-        frame.setSize(1000, maxRows * 30);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setResizable(false);
-        frame.setVisible(true);
-        frame.setLocationRelativeTo(null);
+        setTitle("Package Sorter");
+        setContentPane(databaseMainPanel);
+        setSize(1000, maxRows * 30);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setResizable(false);
+        setVisible(true);
+        setLocationRelativeTo(null);
     }
 }

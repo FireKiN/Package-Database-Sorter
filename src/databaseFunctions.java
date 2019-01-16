@@ -29,7 +29,7 @@ public class databaseFunctions implements ActionListener {
     }
 
     // creates all the methods that will actually be used to compare each string, int or double. We used the Comparator method that is part of the
-    // java.util library.
+    // java.util library. 
     class packageIDCompare implements Comparator<packageSort> {
         public int compare(packageSort a1, packageSort a2) {
             return a1.packageIDSort - a2.packageIDSort;
@@ -40,6 +40,11 @@ public class databaseFunctions implements ActionListener {
             return a1.databaseIDSort - a2.databaseIDSort;
         }
     }
+    // When sorting a string it will sort in this order: lowest - highest number then capital letters then lowercase letters. So
+    // we turned the first letter of each package name to a capital to solve a problem that we had. The problem was that when a lowercase 
+    // letter that should be ahead of a name with a capital letter at the beginning was compared, the capital letter took priority due to
+    // the nature of the Comparator method. This obviously resulted in a falsely sorted data.txt file and ultimately displayed all the 
+    // data incorrectly.
     class packageNameCompare implements Comparator<packageSort> {
         public int compare(packageSort a1, packageSort a2) {
             return a1.packageNameSort.compareTo(a2.packageNameSort);
@@ -94,7 +99,11 @@ public class databaseFunctions implements ActionListener {
         //Refreshes the window with it's new components
         databaseBuild.databaseMainPanel.revalidate();
     }
-
+    
+    // the reason the following code looks very repeated is because we failed to find an efficient way to determine which sorting
+    // algorithm to use. This happened because of the way that we created the actual methods to sort each type of data. They had to 
+    // be put into classes due to the nature of the Comparator method. It is very specific in terms of what information it needs to 
+    // function properly. The only thing that changes between each a.getSource() if statements is the type of sorting that it happening.
     // this is wear the program determines which columns to sort and how.
     public void actionPerformed(ActionEvent a) {
         // sorts by package ID from lowest value to highest.

@@ -3,6 +3,7 @@ import java.awt.*;
 import java.io.*;
 
 public class databaseBuild extends JFrame {
+    // this int keeps track of which databaseID the program is on. It just counts the number of packages that have been entered.
     static int databaseIDNum;
     public static JButton btnDatabaseID, btnPackageName, btnPackageID, btnDateArrived, btnWeight;
     public static JPanel databaseMainPanel;
@@ -24,6 +25,7 @@ public class databaseBuild extends JFrame {
 
         // adds the buttons to an array so that it can be added to the main panel more efficiently.
         JButton[] topButtons = {btnPackageID, btnDatabaseID, btnPackageName, btnDateArrived, btnWeight};
+        // set the dimensions that will be applied to the buttons.
         Dimension buttonDimension = new Dimension(0, 35);
 
         for (int i = 0; i < topButtons.length; i++) {
@@ -44,10 +46,13 @@ public class databaseBuild extends JFrame {
             while (currentLine != null) {
                 currentLineComponents = currentLine.split("<>");
                 for (int i = 0; i < currentLineComponents.length; i++) {
+                    // we use a placeholder JLabel to add each line of data.txt to the database window. This is easier than 
+                    // creating a new JLabel for each line of data.
                     JLabel placeHolder = new JLabel(currentLineComponents[i]);
                     placeHolder.setHorizontalAlignment(JLabel.CENTER);
                     databaseMainPanel.add(placeHolder);
                 }
+                // add one to the maximum rows so that more data can be added as needed.
                 maxRows++;
                 currentLine = in.readLine();
             }

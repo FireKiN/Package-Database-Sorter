@@ -58,6 +58,7 @@ public class databaseFunctions implements ActionListener {
 
     // method to re-arrange the databaseBuild window after trying to sort a certain category.
     public void reArrangeDatabaseBuild() {
+        // removes all the components from the frame.
         databaseBuild.databaseMainPanel.removeAll();
         Dimension buttonDimension = new Dimension(0, 35);
 
@@ -90,6 +91,7 @@ public class databaseFunctions implements ActionListener {
         } catch (IOException error) {
             System.out.println("Database JLabel");
         }
+        // basically refreshes the windows.
         databaseBuild.databaseMainPanel.revalidate();
     }
 

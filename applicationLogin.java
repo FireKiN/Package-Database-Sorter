@@ -2,16 +2,17 @@ import javax.swing.*;
 import java.awt.*;
 
 public class applicationLogin extends JFrame {
+    // adding the applicationSignUp class to a frame so that it can be disposed of when needed.
+    public static JFrame frame;
     public static JTextField txtUser;
     public static JPasswordField txtPass;
     public static JButton btnLogin, btnSignUp;
-    public static JFrame frame;
 
     public applicationLogin() {
         frame = new JFrame();
         GridBagConstraints gbc = new GridBagConstraints();
-
         JPanel mainPanel = new JPanel(new GridBagLayout());
+
         gbc.weightx = 100;
         gbc.weighty = 100;
         gbc.insets = new Insets(0, 10, 0, 10);
@@ -20,21 +21,26 @@ public class applicationLogin extends JFrame {
         gbc.gridy = 0;
         JLabel lblLogin = new JLabel("Username:");
         mainPanel.add(lblLogin, gbc);
+
         gbc.gridy = 1;
         JLabel lblPass = new JLabel("Password:");
         mainPanel.add(lblPass, gbc);
+
         gbc.gridy = 2;
         btnLogin = new JButton("Login");
         btnLogin.addActionListener(new applicationFunctions());
         mainPanel.add(btnLogin, gbc);
+
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.WEST;
         txtUser = new JTextField(10);
         mainPanel.add(txtUser, gbc);
+
         gbc.gridy = 1;
         txtPass = new JPasswordField(10);
         mainPanel.add(txtPass, gbc);
+
         gbc.gridy = 2;
         btnSignUp = new JButton("Sign Up");
         btnSignUp.addActionListener(new applicationFunctions());

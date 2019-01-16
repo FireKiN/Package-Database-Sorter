@@ -1,7 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.io.*;
 
@@ -17,7 +16,6 @@ public class applicationBuild extends JFrame {
     public static JButton btnView, btnEnter, btnClear, btnDelete;
     //If there is only one entry then when the user clicks the view button, the database window does not display because there are
     //no entries into the database, and the database looks awkward.
-    public static boolean isThereOneEntry = false;
     public static String formattedDate;
     public static ImageIcon box = new ImageIcon("src//box.png");
 

@@ -63,5 +63,6 @@ public class databaseBuild extends JFrame {
         setResizable(false);
         setVisible(true);
         setLocationRelativeTo(null);
+        setIconImage(applicationBuild.box.getImage());
     }
 }

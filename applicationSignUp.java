@@ -71,5 +71,6 @@ public class applicationSignUp extends JFrame {
         frame.setResizable(false);
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
+        frame.setIconImage(applicationBuild.box.getImage());
     }
 }
